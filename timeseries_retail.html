@@ -1,0 +1,851 @@
+
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+    <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Statistical Methods for Discrete Response, Time Series, and Panel Data</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <meta name="author" content="Ryan Delgado, Aditi Khullar, Aaron Olson"" />
+    <meta name="description" content="Statistical Analysis applied to Retail Sales" />
+    <meta name="keywords" content="python, gradient boost, decision tree, spark, pyspark">
+<!-- Facebook and Twitter integration -->
+<meta property="og:site_name" content="Aaron J. Olson - Portfolio"/>
+<meta property="og:title" content="Statistical Methods for Discrete Response, Time Series, and Panel Data"/>
+<meta property="og:description" content="Statistical Analysis applied to Retail Sales"/>
+<meta property="og:url" content="https://aaron-j-olson.com/timeseries_retail.html"/>
+<meta property="og:type" content="article"/>
+<meta property="article:published_time" content="2018-03-08 20:00:00-05:00"/>
+<meta property="article:modified_time" content=""/>
+<meta property="article:author" content="https://aaron-j-olson.com/author/ryan-delgado-aditi-khullar-aaron-olson.html">
+<meta property="article:section" content="posts"/>
+    <meta property="article:tag" content="python"/>
+    <meta property="article:tag" content="gradient boost"/>
+    <meta property="article:tag" content="decision tree"/>
+    <meta property="article:tag" content="spark"/>
+    <meta property="article:tag" content="pyspark"/>
+    <meta property="og:image" content="\images\olson.JPG">
+
+    <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700" rel="stylesheet">
+
+    <!-- Animate.css -->
+    <link rel="stylesheet" href="https://aaron-j-olson.com/theme/css/animate.css">
+    <!-- Icomoon Icon Fonts-->
+    <link rel="stylesheet" href="https://aaron-j-olson.com/theme/css/icomoon.css">
+    <!-- Bootstrap  -->
+    <link rel="stylesheet" href="https://aaron-j-olson.com/theme/css/bootstrap.css">
+    <!-- Flexslider  -->
+    <link rel="stylesheet" href="https://aaron-j-olson.com/theme/css/flexslider.css">
+    <!-- Theme style  -->
+    <link rel="stylesheet" href="https://aaron-j-olson.com/theme/css/style.css">
+    <!-- Custom style  -->
+    <link rel="stylesheet" href="https://aaron-j-olson.com/theme/css/custom.css">
+    <!-- pygments code highlight -->
+    <link rel="stylesheet" href="https://aaron-j-olson.com/theme/css/pygments.css">
+    <!-- tipue search -->
+    <link rel="stylesheet" href="https://aaron-j-olson.com/theme/tipuesearch/css/tipuesearch.css">
+
+    <!-- Modernizr JS -->
+    <script src="https://aaron-j-olson.com/theme/js/modernizr-2.6.2.min.js"></script>
+    <!-- FOR IE9 below -->
+    <!--[if lt IE 9]>
+    <script src="/theme/js/respond.min.js"></script>
+    <![endif]-->
+        <link href="https://aaron-j-olson.com/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Aaron J. Olson - Portfolio Atom">
+
+
+
+    </head>
+    <body>
+    <div id="fh5co-page">
+        <a href="#" class="js-fh5co-nav-toggle fh5co-nav-toggle"><i></i></a>
+        <aside id="fh5co-aside" role="complementary" class="border js-fullheight">
+
+            <nav class="fh5co-main-menu" role="navigation">
+            </nav>
+            <div class="clearfix"></div>
+            <h1  id="fh5co-logo">
+                <a href="https://aaron-j-olson.com/index.html">
+                    <img src="\images\olson.JPG" />
+                </a>
+            </h1>
+            <nav class="fh5co-main-menu" role="navigation">
+<ul>
+    <!-- home link -->
+    <li><a href="https://aaron-j-olson.com/">Home</a></li>
+
+    <!-- page links -->
+            <li><a href="https://aaron-j-olson.com/pages/home.html">About Me</a></li>
+
+    <!-- categories -->
+        <li><a href="https://aaron-j-olson.com/categories.html">Categories</a></li>
+
+    <!-- tags -->
+        <li><a href="https://aaron-j-olson.com/tags.html">Tags</a></li>
+
+    <!-- additional menu items from config -->
+        <!-- <li class="nav-title">Misc</li> -->
+            <li><a href="https://aaron-j-olson.com/archives.html">Archive</a></li>
+            <li><a href="https://aaron-j-olson.com/contact.html">Contact</a></li>
+
+</ul>
+            </nav>
+
+<ul id="social">
+            <li><a href="https://github.com/ajolson89" alt="Github"><i class="icon-github"></i></a></li>
+
+            <li><a href="https://www.linkedin.com/in/aaron-j-olson/" alt="LinkedIn"><i class="icon-linkedin2"></i></a></li>
+
+</ul>
+        </aside>
+
+        <div id="fh5co-main">
+
+    <div class="fh5co-narrow-content article-content">
+        <h1 class="fh5co-heading-colored">Statistical Methods for Discrete Response, Time Series, and Panel Data</h1>
+
+        <div>by
+                <a href="author/ryan-delgado-aditi-khullar-aaron-olson.html">Ryan Delgado, Aditi Khullar, Aaron Olson"</a> - Thu 08 March 2018
+        </div>
+
+            <div><span>Tags: </span>
+                    <span><a href="https://aaron-j-olson.com/tag/python.html">#python</a> </span>
+                    <span><a href="https://aaron-j-olson.com/tag/gradient-boost.html">#gradient boost</a> </span>
+                    <span><a href="https://aaron-j-olson.com/tag/decision-tree.html">#decision tree</a> </span>
+                    <span><a href="https://aaron-j-olson.com/tag/spark.html">#spark</a> </span>
+                    <span><a href="https://aaron-j-olson.com/tag/pyspark.html">#pyspark</a> </span>
+            </div>
+
+        <div class="animate-box" data-animate-effect="fadeInLeft">
+            <p class="animate-box" data-animate-effect="fadeInLeft"><h1>Question 1: Forecasting using a SARIMA model</h1>
+<p><em>ECOMPCTNSA.csv</em>, contains quarterly data of E-Commerce Retail Sales as a Percent of Total Sales. The data can be found at: https://fred.stlouisfed.org/series/ECOMPCTNSA.</p>
+<p>```{r setup, include=FALSE}
+library(car)
+library(dplyr)
+library(quantmod)
+library(ggplot2)
+library(ggfortify)
+library(astsa)
+library(forecast)
+library(xts)</p>
+<p>options("getSymbols.warning4.0"=FALSE)</p>
+<div class="highlight"><pre><span></span><span class="n">Build</span> <span class="n">a</span> <span class="n">Seasonal</span> <span class="n">ARIMA</span> <span class="n">model</span> <span class="k">and</span> <span class="n">generate</span> <span class="n">quarterly</span> <span class="n">forecast</span> <span class="k">for</span> <span class="mi">2017</span><span class="p">.</span> <span class="n">Make</span> <span class="n">sure</span> <span class="n">you</span> <span class="k">use</span> <span class="k">all</span> <span class="n">the</span> <span class="n">steps</span> <span class="n">of</span> <span class="n">building</span> <span class="n">a</span> <span class="n">univariate</span> <span class="kt">time</span> <span class="n">series</span> <span class="n">model</span> <span class="k">between</span> <span class="n">lecture</span> <span class="mi">6</span> <span class="k">and</span> <span class="mi">9</span><span class="p">,</span> <span class="n">such</span> <span class="k">as</span> <span class="n">checking</span> <span class="n">the</span> <span class="n">raw</span> <span class="n">data</span><span class="p">,</span> <span class="n">conducting</span> <span class="n">a</span> <span class="n">thorough</span> <span class="n">EDA</span><span class="p">,</span> <span class="n">justifying</span> <span class="k">all</span> <span class="n">modeling</span> <span class="nf">decisions</span> <span class="p">(</span><span class="n">including</span> <span class="n">transformation</span><span class="p">),</span> <span class="n">testing</span> <span class="n">model</span> <span class="n">assumptions</span><span class="p">,</span> <span class="k">and</span> <span class="n">clearly</span> <span class="n">articulating</span> <span class="n">why</span> <span class="n">you</span> <span class="n">chose</span> <span class="n">your</span> <span class="n">given</span> <span class="n">model</span><span class="p">.</span> <span class="n">Measure</span> <span class="k">and</span> <span class="n">discuss</span> <span class="n">your</span> <span class="n">model</span><span class="s1">&#39;s performance. Use both in-sample and out-of-sample model performance. When estimating your model, exclude the series from 2015 and 2016. For the out-of-sample forecast, measure your model&#39;</span><span class="n">s</span> <span class="n">performance</span> <span class="k">in</span> <span class="n">forecasting</span> <span class="n">the</span> <span class="n">quarterly</span> <span class="n">E</span><span class="o">-</span><span class="n">Commerce</span> <span class="n">retail</span> <span class="n">sales</span> <span class="k">in</span> <span class="mi">2015</span> <span class="k">and</span> <span class="mi">2016</span><span class="p">.</span> <span class="n">Discuss</span> <span class="n">the</span> <span class="n">model</span> <span class="n">performance</span><span class="p">.</span> <span class="n">Also</span> <span class="n">forecast</span> <span class="n">beyond</span> <span class="n">the</span> <span class="n">observed</span> <span class="kt">time</span><span class="o">-</span><span class="n">period</span> <span class="n">of</span> <span class="n">the</span> <span class="n">series</span><span class="p">.</span> <span class="n">Specifically</span><span class="p">,</span> <span class="n">generate</span> <span class="n">quarterly</span> <span class="n">forecast</span> <span class="k">for</span> <span class="mi">2017</span><span class="p">.</span>
+
+<span class="c1">## Introduction</span>
+
+<span class="k">In</span> <span class="n">this</span> <span class="n">lab</span><span class="p">,</span> <span class="n">we</span><span class="s1">&#39;ll analyze Quarterly Retail E-Ecommerce Sales as a Percent of Total Sales data sourced from the U.S. Bureau of the Census. This time series data measures the share of total sales in the United States that can be attributed to E-Commerce. Prior to our analysis, this data was retrieved from the [Federal Reserve Economic Database](https://research.stlouisfed.org/) and stored in a local CSV file. Our goal for this analysis are to understand the properties of the time series and forecast future values. We will achieve this by thoroughly exploring the data, building a statistical model, and evaluating the assumptions and results of our model using standard statistical tests and measures.</span>
+
+<span class="s1">We will proceed as follows:</span>
+
+<span class="s1">1. We&#39;</span><span class="n">ll</span> <span class="k">read</span> <span class="n">the</span> <span class="n">raw</span> <span class="n">data</span> <span class="k">into</span> <span class="n">the</span> <span class="n">appropriate</span> <span class="n">data</span> <span class="n">structure</span><span class="p">,</span> <span class="k">and</span> <span class="n">examine</span> <span class="n">it</span> <span class="k">for</span> <span class="n">any</span> <span class="n">quirks</span> <span class="k">or</span> <span class="n">data</span> <span class="n">quality</span> <span class="nf">issues</span> <span class="p">(</span><span class="n">e</span><span class="p">.</span><span class="n">g</span><span class="p">.</span> <span class="n">missing</span> <span class="n">data</span><span class="p">)</span> <span class="n">that</span> <span class="n">need</span> <span class="k">to</span> <span class="n">be</span> <span class="n">addressed</span> <span class="k">before</span> <span class="n">proceeding</span><span class="p">.</span>
+<span class="mi">2</span><span class="p">.</span> <span class="n">We</span><span class="s1">&#39;ll then conduct a thorough Time Series Exploratory Data Analysis. We&#39;</span><span class="n">ll</span> <span class="n">look</span> <span class="k">for</span> <span class="n">evidence</span> <span class="n">of</span> <span class="n">seasonality</span><span class="p">,</span> <span class="n">trend</span><span class="p">,</span> <span class="k">and</span> <span class="n">other</span> <span class="n">properties</span> <span class="n">that</span> <span class="n">will</span> <span class="n">need</span> <span class="k">to</span> <span class="n">be</span> <span class="n">accounted</span> <span class="k">for</span> <span class="n">during</span> <span class="n">the</span> <span class="n">modeling</span> <span class="n">phase</span><span class="p">.</span> 
+<span class="mi">3</span><span class="p">.</span> <span class="n">Next</span><span class="p">,</span> <span class="n">we</span><span class="s1">&#39;ll model the series using the findings from the EDA and standard approaches. We&#39;</span><span class="n">ll</span> <span class="n">suggest</span> <span class="n">an</span> <span class="n">appropriate</span> <span class="n">class</span> <span class="n">of</span> <span class="n">models</span><span class="p">,</span> <span class="k">and</span> <span class="n">fit</span> <span class="n">several</span> <span class="n">models</span> <span class="k">to</span> <span class="n">find</span> <span class="n">one</span> <span class="n">that</span> <span class="n">best</span> <span class="n">explains</span> <span class="n">the</span> <span class="n">data</span><span class="p">.</span> <span class="k">For</span> <span class="k">each</span> <span class="n">model</span><span class="p">,</span> <span class="n">we</span><span class="s1">&#39;ll evaluate the goodness if fit and the assumptions we must satisfy in order to make inferences and predictions.</span>
+<span class="s1">4. Among multiple valid models, we&#39;</span><span class="n">ll</span> <span class="n">choose</span> <span class="n">the</span> <span class="n">best</span> <span class="n">one</span><span class="p">.</span> <span class="n">We</span><span class="s1">&#39;ll use the AIC to evaluate goodness of fit and test that the model meets the assumptions these models requrie in order to ensure accurate forecasts and inferences.</span>
+<span class="s1">5. We&#39;</span><span class="n">ll</span> <span class="k">then</span> <span class="n">generate</span> <span class="k">out</span><span class="o">-</span><span class="n">of</span><span class="o">-</span><span class="n">sample</span> <span class="n">forecasts</span><span class="p">.</span> <span class="n">We</span><span class="s1">&#39;ll visually compare our forecasts with the actual value, and quantitatively evaluate the performance.</span>
+
+<span class="s1">## Initial Examination</span>
+
+<span class="s1">The data is stored locally in a csv file that we can read into a `data.frame` and transform into a `ts` object. We&#39;</span><span class="n">ll</span> <span class="n">look</span> <span class="n">at</span> <span class="n">the</span> <span class="n">first</span> <span class="n">few</span> <span class="n">observations</span> <span class="k">and</span> <span class="n">plot</span> <span class="n">a</span> <span class="n">histogram</span> <span class="n">of</span> <span class="n">the</span> <span class="n">series</span><span class="s1">&#39; values:</span>
+
+<span class="s1">```{r, fig.width=4, fig.height=2}</span>
+<span class="s1">df &lt;- read.csv(&#39;</span><span class="n">ECOMPCTNSA</span><span class="p">.</span><span class="n">csv</span><span class="s1">&#39;)</span>
+<span class="s1">cbind(head(df), tail(df))</span>
+
+<span class="s1">ggplot(df, aes(x=ECOMPCTNSA)) +</span>
+<span class="s1">  geom_histogram(color=&#39;</span><span class="n">black</span><span class="s1">&#39;, fill=&#39;</span><span class="n">blue</span><span class="s1">&#39;) +</span>
+<span class="s1">  ggtitle(&#39;</span><span class="n">Distribution</span> <span class="n">of</span> <span class="n">ECOMPCTNSA</span><span class="err">&#39;</span><span class="p">)</span>
+</pre></div>
+
+
+<p><strong>Observations:</strong></p>
+<ul>
+<li>We do not see any missing values in the data.</li>
+<li>The start and end of the series appear to be similarly-valued (i.e. within the same order of magnitude), with the values at the end of the series being consistently greater than the start.</li>
+<li>The histogram shows the data is not normally distributed, and does not have any significant outliers that are worthy of further exploration.</li>
+</ul>
+<p>Nothing in the data seems aberrant and needs to be addressed. Let's proceed to the Time Series Exploratory Data Analysis.</p>
+<h2>Exploratory Data Analysis</h2>
+<p>We'll start by converting our data to a <code>ts</code> object and plotting it:
+```{r, fig.width=4, fig.height=2}
+series &lt;- ts(df$ECOMPCTNSA, start=c(1999,4), frequency=4)
+autoplot(series, ts.colour='blue', ts.size=0.75) +
+  ggtitle('Time Series Plot of ECOMPCTNSA') +
+  xlab('Time') + ylab('ECOMPCTNSA')</p>
+<div class="highlight"><pre><span></span><span class="o">**</span><span class="n">Observations</span><span class="o">:**</span>
+
+<span class="o">*</span> <span class="n">There</span> <span class="n">is</span> <span class="n">a</span> <span class="n">strong</span> <span class="n">upward</span> <span class="n">trend</span> <span class="n">in</span> <span class="n">the</span> <span class="n">series</span><span class="p">,</span> <span class="n">with</span> <span class="n">the</span> <span class="n">trend</span> <span class="n">appearing</span> <span class="n">to</span> <span class="n">grow</span> <span class="n">exponentially</span> <span class="n">with</span> <span class="n">time.</span>
+<span class="o">*</span> <span class="n">The</span> <span class="n">amplitude</span> <span class="n">of</span> <span class="n">the</span> <span class="n">seasonal</span> <span class="n">component</span> <span class="n">increases</span> <span class="n">with</span> <span class="n">the</span> <span class="nf">trend </span><span class="p">(</span><span class="n">i.e.</span> <span class="n">non</span><span class="o">-</span><span class="n">constant</span> <span class="n">variance</span><span class="p">)</span><span class="n">.</span>
+<span class="o">*</span> <span class="n">There</span> <span class="n">does</span> <span class="n">not</span> <span class="n">appear</span> <span class="n">to</span> <span class="n">be</span> <span class="n">much</span> <span class="n">randomness</span> <span class="n">in</span> <span class="n">the</span> <span class="n">series.</span> <span class="n">The</span> <span class="n">trend</span> <span class="n">and</span> <span class="n">seasonal</span> <span class="n">components</span> <span class="n">dominate.</span>
+
+<span class="n">Because</span> <span class="n">our</span> <span class="n">series</span> <span class="n">is</span> <span class="n">non</span><span class="o">-</span><span class="n">negative</span> <span class="n">and</span> <span class="n">exponentially</span> <span class="n">growing</span><span class="p">,</span> <span class="n">a</span> <span class="n">log</span> <span class="n">transformation</span> <span class="n">will</span> <span class="n">be</span> <span class="n">useful</span> <span class="n">for</span> <span class="n">handling</span> <span class="n">the</span> <span class="n">exponential</span> <span class="n">growth</span> <span class="n">in</span> <span class="n">the</span> <span class="n">trend</span> <span class="n">and</span> <span class="n">seasonality.</span> <span class="n">The</span> <span class="n">components</span> <span class="n">of</span> <span class="n">the</span> <span class="n">log</span><span class="o">-</span><span class="n">transformed</span> <span class="n">series</span> <span class="n">will</span> <span class="n">grow</span> <span class="n">linearly</span> <span class="n">instead</span> <span class="n">of</span> <span class="n">exponentially</span><span class="p">,</span> <span class="n">and</span> <span class="n">thus</span> <span class="n">will</span> <span class="n">be</span> <span class="n">easier</span> <span class="n">to</span> <span class="n">model</span> <span class="n">using</span> <span class="n">a</span> <span class="n">linear</span> <span class="n">time</span> <span class="n">series</span> <span class="n">model.</span> <span class="n">Let</span><span class="s">&#39;s perform this transformation and plot the resulting series:</span>
+
+<span class="s">```{r, fig.width=4, fig.height=2}</span>
+<span class="s">log.series &lt;- ts(log(df$ECOMPCTNSA), start=c(1999,4), frequency=4)</span>
+<span class="s">autoplot(log.series, ts.colour=&#39;</span><span class="n">darkgreen</span><span class="s">&#39;, ts.size = 0.75) +</span>
+<span class="s">  ggtitle(&#39;</span><span class="n">Time</span> <span class="n">Series</span> <span class="n">plot</span> <span class="n">of</span> <span class="nf">log</span><span class="p">(</span><span class="n">ECOMPCTNSA</span><span class="p">)</span><span class="s">&#39;) +</span>
+<span class="s">  xlab(&#39;</span><span class="n">Time</span><span class="s">&#39;) + ylab(&#39;</span><span class="nf">log</span><span class="p">(</span><span class="n">ECOMPCTNSA</span><span class="p">)</span><span class="s">&#39;</span><span class="err">)</span>
+</pre></div>
+
+
+<p>The series still has a strong upward trend, but the trend is now mostly linear and the seasonality is stable Let's now explore the trend, seasonality and random component separately by decomposing this log-transformed series: </p>
+<p>```{r, fig.width=4, fig.height=3}
+decomposed &lt;- decompose(as.ts(log.series))
+autoplot(decomposed)</p>
+<div class="highlight"><pre><span></span><span class="o">**</span><span class="n">Observations</span><span class="p">:</span><span class="o">**</span>
+
+<span class="o">*</span> <span class="n">We</span> <span class="n">can</span> <span class="k">more</span> <span class="n">clearly</span> <span class="n">see</span> <span class="n">that</span> <span class="n">the</span> <span class="n">trend</span> <span class="n">grows</span> <span class="n">linearly</span> <span class="k">and</span> <span class="n">the</span> <span class="n">seasonal</span> <span class="n">component</span> <span class="k">is</span> <span class="k">stable</span><span class="p">.</span> 
+<span class="o">*</span> <span class="n">Because</span> <span class="n">the</span> <span class="n">trend</span> <span class="n">component</span> <span class="k">is</span> <span class="n">linear</span><span class="p">,</span> <span class="n">we</span> <span class="n">can</span> <span class="n">handle</span> <span class="n">it</span> <span class="k">in</span> <span class="n">the</span> <span class="n">modeling</span> <span class="n">phase</span> <span class="k">using</span> <span class="n">a</span> <span class="k">first</span><span class="o">-</span><span class="k">order</span> <span class="n">difference</span> <span class="k">of</span> <span class="n">the</span> <span class="n">series</span><span class="p">.</span>
+<span class="o">*</span> <span class="n">We</span> <span class="n">see</span> <span class="n">that</span> <span class="n">the</span> <span class="n">seasonality</span> <span class="n">peaks</span> <span class="k">at</span> <span class="n">the</span> <span class="k">end</span> <span class="k">of</span> <span class="k">each</span> <span class="k">year</span><span class="p">,</span> <span class="n">suggesting</span> <span class="n">the</span> <span class="n">frequency</span> <span class="k">of</span> <span class="n">the</span> <span class="n">seasonality</span> <span class="k">is</span> <span class="n">annual</span><span class="o">/</span><span class="n">four</span> <span class="n">quarters</span><span class="p">.</span> <span class="n">We</span> <span class="n">can</span> <span class="n">handle</span> <span class="n">this</span> <span class="k">in</span> <span class="n">the</span> <span class="n">modeling</span> <span class="n">phase</span> <span class="k">by</span> <span class="k">including</span> <span class="n">seasonal</span> <span class="n">differencing</span> <span class="k">and</span> <span class="n">AR</span><span class="o">/</span><span class="n">MA</span> <span class="n">components</span> <span class="k">with</span> <span class="n">a</span> <span class="n">base</span> <span class="n">lag</span> <span class="k">of</span> <span class="mi">4</span><span class="p">.</span>
+<span class="o">*</span> <span class="n">The</span> <span class="n">random</span> <span class="n">component</span> <span class="n">appears</span> <span class="n">weakly</span> <span class="n">stationary</span><span class="p">,</span> <span class="n">though</span> <span class="n">it</span> <span class="n">does</span> <span class="k">not</span> <span class="n">appear</span> <span class="k">to</span> <span class="n">resemble</span> <span class="n">Gaussian</span> <span class="n">White</span> <span class="n">Noise</span><span class="p">.</span> <span class="n">Thus</span><span class="p">,</span> <span class="n">there</span> <span class="n">appears</span> <span class="k">to</span> <span class="n">be</span> <span class="n">persistence</span> <span class="k">in</span> <span class="n">this</span> <span class="n">component</span><span class="p">.</span>
+
+<span class="n">Let</span><span class="err">&#39;</span><span class="n">s</span> <span class="n">apply</span> <span class="n">the</span> <span class="n">seasonal</span> <span class="k">and</span> <span class="n">non</span><span class="o">-</span><span class="n">seasonal</span> <span class="n">differencing</span> <span class="k">to</span> <span class="n">the</span> <span class="n">series</span> <span class="k">and</span> <span class="n">examine</span> <span class="n">the</span> <span class="n">ACF</span> <span class="k">and</span> <span class="n">PACF</span> <span class="n">plots</span> <span class="k">of</span> <span class="n">the</span> <span class="k">result</span><span class="p">:</span>
+
+<span class="o">```</span><span class="err">{</span><span class="n">r</span><span class="p">,</span> <span class="n">fig</span><span class="p">.</span><span class="n">width</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">fig</span><span class="p">.</span><span class="n">height</span><span class="o">=</span><span class="mi">3</span><span class="err">}</span>
+<span class="n">diff</span><span class="p">(</span><span class="n">log</span><span class="p">.</span><span class="n">series</span><span class="p">,</span> <span class="n">lag</span> <span class="o">=</span> <span class="mi">4</span><span class="p">)</span> <span class="o">%&gt;%</span> <span class="n">diff</span><span class="p">()</span> <span class="o">%&gt;%</span> <span class="n">ggtsdisplay</span><span class="p">()</span>
+</pre></div>
+
+
+<p>Despite the differencing, the ACF and PACF plots continues to show statistically significant autocorrelation with the 4th lag. Interestingly, no other lags show statistically significant autocorrelation. We can see in the PACF plot that this apparently seasonal autocorrelation seems to decay gradually with each yearly increment, with the autocorrelation strongly negative in lag 4, weakly negative in lag 8, weakly positive in lag 12, and even more weakly positive at lag 16. The ACF plot shows a strong negative autocorrelation at lag 4, but a sharp cut-off afterwards (i.e. no slow decay). This behavior is typical of an MA component, and thus suggests the model likely has a seasonal first-order MA component, i.e. $SARIMA(0,1,0)(0,1,1)<em>4$. We will experiment with this in the _Modeling</em> section, as well as experiment with a seasonal AR component.</p>
+<p><strong>Key Takeaways:</strong></p>
+<ul>
+<li>The trend and seasonal components exhibited exponential growth. We handled this by log-transforming the series.</li>
+<li>The trend of the log-transformed series is linear, which can be handled with first-differencing in the time series model.</li>
+<li>The series has annual seasonality. Since the time series has a quarterly frequency, we can incorporate seasonal differencing and seasonal AR/MA terms with a lag order of 4 into the model.</li>
+<li>The random component exhibits serial correlation with a seasonal component, which is likely a first-order MA component.</li>
+</ul>
+<h2>Modeling</h2>
+<p>Since the log-transformed series exhibits a linear trend and annual seasonality, we'll use a Seasonal AutoRegressive Integrated Moving Average (SARIMA) model. SARIMA models are useful for better understanding or predicting future values of a univariate time series with a seasonal component, which makes it perfect for our purposes. In order for the inferences and forecasts of this model to be valid, it must meet several assumptions:</p>
+<ul>
+<li>The residual series is independently distributed from its lagged values. This can be evaluated visually with the ACF and PACF plots of the residuals, and statistically with the Ljung-Box test.</li>
+<li>The residual series has a zero mean.</li>
+<li>The residuals are normally distributed and resemble Gaussian White Noise. We can test that the residuals are normally distributed with the Shapiro-Wilk test. </li>
+</ul>
+<p>In order to find the "best" model, we'll fit multiple SARIMA models with different specifications of the AR and MA lag orders in both the seasonal and nonseasonal components of the series. We'll evaluate each model by its Akaike Information Criterion (AIC).</p>
+<p>Gaussian residuals are important for ensuring good forecast performance. With the sample size of this dataset being so low, however, (60 observations in the training set) it may be difficult to obtain Gaussian residuals. We will therefore proceed by fitting two different models: </p>
+<ul>
+<li>A SARIMA model with lag orders determined using EDA and ACF/PACF plots, but relaxing the Gaussian residuals assumption.</li>
+<li>A SARIMA model programmatically determined, and requiring Gaussian distributed residuals.</li>
+</ul>
+<p>Before proceeding, we will subset the time series into "train" and "test" series' to fit the model and eventually evaluate its out-of-sample forecast performance:</p>
+<div class="highlight"><pre><span></span><span class="n">series.train</span> <span class="o">&lt;-</span> <span class="nf">window</span><span class="p">(</span><span class="n">log.series</span><span class="p">,</span> <span class="nf">c</span><span class="p">(</span><span class="m">1999</span><span class="p">,</span><span class="m">4</span><span class="p">),</span> <span class="nf">c</span><span class="p">(</span><span class="m">2014</span><span class="p">,</span><span class="m">4</span><span class="p">))</span>
+<span class="n">series.test</span> <span class="o">&lt;-</span> <span class="nf">window</span><span class="p">(</span><span class="n">log.series</span><span class="p">,</span> <span class="nf">c</span><span class="p">(</span><span class="m">2015</span><span class="p">,</span><span class="m">1</span><span class="p">))</span>
+</pre></div>
+
+
+<h3>Model 1: Derived from Intuition &amp; Manual Experimentation</h3>
+<p>We'll first fit a $SARIMA(0,1,0)(0,1,1)_4$ model, as discussed in the EDA:</p>
+<p>```{r, fig.width=6, fig.height=3}
+ma &lt;- Arima(series.train, c(0,1,0), seasonal = list(order = c(0,1,1), 4))
+summary(ma)</p>
+<h1>Test stationarity</h1>
+<p>Box.test(ma$residuals, type = "Ljung-Box")</p>
+<h1>Examine Normality</h1>
+<p>shapiro.test(ma$residuals)</p>
+<p>par(mfrow = c(1, 2))
+acf(ma$residuals, main='Seasonal MA(1) \nResiduals ACF')
+pacf(ma$residuals, main='Seasonal MA(1) \nResiduals PACF')</p>
+<div class="highlight"><pre><span></span><span class="o">**</span><span class="n">Observations</span><span class="o">:**</span>
+
+<span class="o">*</span> <span class="n">We</span> <span class="n">see</span> <span class="n">that</span> <span class="n">the</span> <span class="n">seasonal</span> <span class="nf">MA</span><span class="p">(</span><span class="m">1</span><span class="p">)</span> <span class="n">coefficient</span> <span class="n">is</span> <span class="n">highly</span> <span class="n">statistically</span> <span class="n">significant.</span>
+<span class="o">*</span> <span class="n">We</span> <span class="n">do</span> <span class="n">not</span> <span class="n">reject</span> <span class="o">$</span><span class="n">H_0</span><span class="o">$</span> <span class="n">in</span> <span class="n">the</span> <span class="n">Box</span><span class="o">-</span><span class="n">Ljung</span> <span class="n">test</span><span class="p">,</span> <span class="n">but</span> <span class="n">we</span> _<span class="n">do_</span> <span class="n">reject</span> <span class="n">the</span> <span class="o">$</span><span class="n">H_0</span><span class="o">$</span> <span class="n">in</span> <span class="n">the</span> <span class="n">Shapiro</span><span class="o">-</span><span class="n">Wilk</span> <span class="n">test.</span> <span class="n">We</span> <span class="n">have</span> <span class="n">strong</span> <span class="n">evidence</span> <span class="n">that</span> <span class="n">the</span> <span class="n">model</span><span class="s">&#39;s residuals _are not_ normally distributed.</span>
+<span class="s">* Visually, we do not see any statistically significant lag orders in the residual ACF and PACF plots.</span>
+<span class="s">* The AICc is -201.31</span>
+
+<span class="s">Everything in the results looks acceptable, except for the apparent non-normally distributed residuals. Let&#39;</span><span class="n">s</span> <span class="n">see</span> <span class="n">if</span> <span class="n">a</span> <span class="n">seasonal</span> <span class="nf">AR</span><span class="p">(</span><span class="m">1</span><span class="p">)</span> <span class="n">model</span> <span class="n">has</span> <span class="n">different</span> <span class="n">results</span><span class="o">:</span>
+<span class="n">``</span>`<span class="p">{</span><span class="n">r</span><span class="p">,</span> <span class="n">fig.width</span><span class="o">=</span><span class="m">6</span><span class="p">,</span> <span class="n">fig.height</span><span class="o">=</span><span class="m">3</span><span class="p">}</span>
+<span class="n">ar</span> <span class="o">&lt;-</span> <span class="nf">Arima</span><span class="p">(</span><span class="n">series.train</span><span class="p">,</span> <span class="nf">c</span><span class="p">(</span><span class="m">0</span><span class="p">,</span><span class="m">1</span><span class="p">,</span><span class="m">0</span><span class="p">),</span> <span class="n">seasonal</span> <span class="o">=</span> <span class="nf">list</span><span class="p">(</span><span class="n">order</span> <span class="o">=</span> <span class="nf">c</span><span class="p">(</span><span class="m">1</span><span class="p">,</span><span class="m">1</span><span class="p">,</span><span class="m">0</span><span class="p">),</span> <span class="m">4</span><span class="p">))</span>
+<span class="nf">summary</span><span class="p">(</span><span class="n">ar</span><span class="p">)</span>
+
+<span class="c1">#Test stationarity</span>
+<span class="nf">Box.test</span><span class="p">(</span><span class="n">ar</span><span class="o">$</span><span class="n">residuals</span><span class="p">,</span> <span class="n">type</span> <span class="o">=</span> <span class="s">&quot;Ljung-Box&quot;</span><span class="p">)</span>
+
+<span class="c1"># Examine Normality</span>
+<span class="nf">shapiro.test</span><span class="p">(</span><span class="n">ar</span><span class="o">$</span><span class="n">residuals</span><span class="p">)</span>
+
+<span class="nf">par</span><span class="p">(</span><span class="n">mfrow</span> <span class="o">=</span> <span class="nf">c</span><span class="p">(</span><span class="m">1</span><span class="p">,</span> <span class="m">2</span><span class="p">))</span>
+<span class="nf">acf</span><span class="p">(</span><span class="n">ar</span><span class="o">$</span><span class="n">residuals</span><span class="p">,</span> <span class="n">main</span><span class="o">=</span><span class="s">&#39;Seasonal AR(1) \nResiduals ACF&#39;</span><span class="p">)</span>
+<span class="nf">pacf</span><span class="p">(</span><span class="n">ar</span><span class="o">$</span><span class="n">residuals</span><span class="p">,</span> <span class="n">main</span><span class="o">=</span><span class="s">&#39;Seasonal AR(1) \nResiduals PACF&#39;</span><span class="p">)</span>
+</pre></div>
+
+
+<p>The ACF and PACF plots both show all non-significant lags meaning that the model appears to produce serially independent residuals. The Box-Ljung test confirms that the residuals appear statistically as White Noise. However, we again reject $H_0$ in the Shapiro-Wilk test, indicating the residuals are not Gaussian. </p>
+<p>Among these two "hand-fit" models, we'll choose the seasonal AR(1) model as our "best" one since its AICc is slightly lower. We'll evaluate this model's out of sample performance against a model that meets the Gaussian assumption in the Lab's Forecasting section.</p>
+<h1>Model 2: Require Gaussian White Noise</h1>
+<p>Both of the previous models had a p-value &lt; 0.05 for the Shapiro-Wilk test, indicating the residuals were not Gaussian distributed. This will likely result in prediction intervals that are not as accurate compared to a model with normally distributed residuals.</p>
+<p>In order to find model that meets this assumption while still achieving a low AICc score, we'll programmatically iterate over different combinations of nonseasonal and seasonal lag orders and evaluating each combination. At each iteration, we'll</p>
+<ol>
+<li>Test the independence and normality of the model residuals using the Ljung-Box and Shapiro-Wilk tests, ensuring that the residuals are indepedent and normally distributed.</li>
+<li>Compare the AICc with the AICc of the previous best model. If the current model's AICc is lower than the previous model's AICc (and it does not violate the independence and normality assumptions), the lag orders and AICc of this model will become the new "bests".</li>
+</ol>
+<p>We'll try up to 2 lags in the seasonal AR and MA components, and up to 4 lags in the non-seasonal components. We'll keep the seasonal and non-seasonal differencing constant at 1, based on the strong trend and seasonal components we found in the EDA:</p>
+<p>```{r, fig.width=4, fig.height=3}
+aicc.best &lt;- 100000
+mod.best &lt;- 0</p>
+<p>for(P in 0:2){
+  for(Q in 0:2){
+    for (p in 0:4){
+      for (q in 0:4){
+        mod &lt;- Arima(series.train, order = c(p,1,q),
+                     seasonal = list(order = c(P,1,Q), 4), method = 'ML')
+        if ((Box.test(mod$residuals, type = "Ljung-Box")$p.value &gt; 0.05) &amp; (shapiro.test(mod$residuals)$p.value &gt; 0.05)){
+          if (mod$aicc &lt; aicc.best){
+            aicc.best &lt;- mod$aicc
+            mod.best &lt;- mod
+          }
+        }
+      }
+    }
+  }
+}</p>
+<p>summary(mod.best)</p>
+<p>mod.best$residuals %&gt;% ggtsdisplay()</p>
+<div class="highlight"><pre><span></span><span class="n">The</span> <span class="n">best</span> <span class="n">fitting</span> <span class="n">model</span> <span class="n">was</span> <span class="n">a</span> <span class="n">Seasonal</span> <span class="o">$</span><span class="nf">ARIMA</span><span class="p">(</span><span class="m">4</span><span class="p">,</span> <span class="m">1</span><span class="p">,</span> <span class="m">1</span><span class="p">)(</span><span class="m">0</span><span class="p">,</span><span class="m">1</span><span class="p">,</span><span class="m">0</span><span class="p">)</span>_<span class="m">4</span><span class="o">$</span><span class="n">.</span> <span class="n">This</span> <span class="n">model</span> <span class="n">did</span> <span class="n">not</span> <span class="n">show</span> <span class="n">evidence</span> <span class="n">of</span> <span class="n">non</span><span class="o">-</span><span class="n">normally</span> <span class="n">distributed</span> <span class="n">residuals</span><span class="p">,</span> <span class="n">and</span> <span class="n">had</span> <span class="n">a</span> <span class="n">slightly</span> <span class="n">higher</span> <span class="n">AICc</span> <span class="n">score</span> <span class="n">compared</span> <span class="n">to</span> <span class="n">Model</span> <span class="m">1</span> <span class="p">(</span><span class="m">-201.76</span> <span class="n">vs</span> <span class="m">-205.99</span><span class="p">),</span> <span class="n">indicating</span> <span class="n">that</span> <span class="n">the</span> <span class="n">model</span> <span class="n">may</span> <span class="n">not</span> <span class="n">be</span> <span class="n">as</span> <span class="n">accurate</span> <span class="n">as</span> <span class="n">the</span> <span class="n">first</span> <span class="n">model</span> <span class="n">in</span> <span class="n">out</span> <span class="n">of</span> <span class="n">sample</span> <span class="n">forecasts.</span> <span class="n">The</span> <span class="n">only</span> <span class="n">non</span><span class="o">-</span><span class="n">seasonal</span> <span class="n">AR</span> <span class="n">coefficient</span> <span class="n">with</span> <span class="n">statistical</span> <span class="n">significance</span> <span class="n">is</span> <span class="n">the</span> <span class="m">4</span><span class="n">th</span> <span class="n">lag.</span> <span class="n">It</span> <span class="n">will</span> <span class="n">be</span> <span class="n">interesting</span> <span class="n">to</span> <span class="n">see</span> <span class="n">how</span> <span class="n">the</span> <span class="n">forecasts</span> <span class="n">of</span> <span class="n">these</span> <span class="n">two</span> <span class="n">models</span> <span class="n">compare.</span>
+
+<span class="c1">## Forecasting</span>
+
+<span class="n">Now</span> <span class="n">we</span> <span class="n">will</span> <span class="n">forecast</span> <span class="n">data</span> <span class="n">for</span> <span class="n">both</span> <span class="n">models</span> <span class="n">and</span> <span class="n">observe</span> <span class="n">forecast</span> <span class="n">performance</span> <span class="n">for</span> <span class="n">the</span> <span class="n">out</span> <span class="n">of</span> <span class="n">sample</span> <span class="n">data</span><span class="o">:</span>
+
+<span class="n">``</span>`<span class="p">{</span><span class="n">r</span><span class="p">}</span>
+<span class="c1"># Write a RMSE function to compute RMSE values</span>
+<span class="n">rmse</span> <span class="o">&lt;-</span> <span class="nf">function</span><span class="p">(</span><span class="n">pred</span><span class="p">,</span> <span class="n">actual</span><span class="p">){</span>
+  <span class="nf">return</span><span class="p">(</span><span class="nf">sqrt</span><span class="p">(</span><span class="nf">mean</span><span class="p">((</span><span class="n">pred</span><span class="o">-</span><span class="n">actual</span><span class="p">)</span><span class="o">^</span><span class="m">2</span><span class="p">)))</span>
+<span class="p">}</span>
+
+<span class="c1"># Generate forecasts</span>
+<span class="n">ar_forecast</span> <span class="o">&lt;-</span> <span class="nf">forecast</span><span class="p">(</span><span class="n">ar</span><span class="p">,</span> <span class="m">12</span><span class="p">)</span>
+<span class="n">mod.best_forecast</span> <span class="o">&lt;-</span> <span class="nf">forecast</span><span class="p">(</span><span class="n">mod.best</span><span class="p">,</span> <span class="m">12</span><span class="p">)</span>
+<span class="c1"># Plot series with both models &amp; model forecasts</span>
+<span class="nf">plot</span><span class="p">(</span><span class="n">series</span><span class="p">,</span> <span class="n">main</span> <span class="o">=</span> <span class="s">&#39;E-Commerce Retail Sales and Model Performance&#39;</span><span class="p">,</span> <span class="n">lwd</span> <span class="o">=</span> <span class="m">1.5</span><span class="p">)</span>
+<span class="nf">lines</span><span class="p">(</span><span class="nf">exp</span><span class="p">(</span><span class="nf">fitted.values</span><span class="p">(</span><span class="n">ar</span><span class="p">)),</span> <span class="n">col</span> <span class="o">=</span> <span class="s">&quot;red&quot;</span><span class="p">,</span> <span class="n">lty</span> <span class="o">=</span> <span class="m">2</span><span class="p">,</span> <span class="n">lwd</span> <span class="o">=</span> <span class="m">1.5</span><span class="p">)</span>
+<span class="nf">lines</span><span class="p">(</span><span class="nf">exp</span><span class="p">(</span><span class="nf">fitted.values</span><span class="p">(</span><span class="n">mod.best</span><span class="p">)),</span> <span class="n">col</span> <span class="o">=</span> <span class="s">&quot;blue&quot;</span><span class="p">,</span> <span class="n">lty</span> <span class="o">=</span> <span class="m">4</span><span class="p">,</span> <span class="n">lwd</span> <span class="o">=</span> <span class="m">1.5</span><span class="p">)</span>
+<span class="nf">lines</span><span class="p">(</span><span class="nf">exp</span><span class="p">(</span><span class="n">ar_forecast</span><span class="o">$</span><span class="n">mean</span><span class="p">),</span> <span class="n">col</span> <span class="o">=</span> <span class="s">&quot;green&quot;</span><span class="p">,</span> <span class="n">lty</span> <span class="o">=</span> <span class="m">2</span><span class="p">,</span> <span class="n">lwd</span> <span class="o">=</span> <span class="m">1.5</span><span class="p">)</span>
+<span class="nf">lines</span><span class="p">(</span><span class="nf">exp</span><span class="p">(</span><span class="n">mod.best_forecast</span><span class="o">$</span><span class="n">mean</span><span class="p">),</span> <span class="n">col</span> <span class="o">=</span> <span class="s">&quot;pink&quot;</span><span class="p">,</span> <span class="n">lty</span> <span class="o">=</span> <span class="m">4</span><span class="p">,</span> <span class="n">lwd</span> <span class="o">=</span> <span class="m">1.5</span><span class="p">)</span>
+<span class="nf">legend</span><span class="p">(</span><span class="m">2000</span><span class="p">,</span><span class="m">8</span><span class="p">,</span> <span class="n">legend</span> <span class="o">=</span> <span class="nf">c</span><span class="p">(</span><span class="s">&quot;ECOMPCTNSA Data&quot;</span><span class="p">,</span> <span class="s">&quot;AR Model&quot;</span><span class="p">,</span> <span class="s">&quot;Gaussian Model&quot;</span><span class="p">,</span> <span class="s">&quot;AR forecast&quot;</span><span class="p">,</span> <span class="s">&quot;Gaussian forecast&quot;</span><span class="p">),</span> 
+       <span class="n">col</span> <span class="o">=</span> <span class="nf">c</span><span class="p">(</span><span class="s">&quot;black&quot;</span><span class="p">,</span> <span class="s">&quot;red&quot;</span><span class="p">,</span> <span class="s">&quot;blue&quot;</span><span class="p">,</span> <span class="s">&quot;green&quot;</span><span class="p">,</span> <span class="s">&quot;pink&quot;</span><span class="p">),</span> 
+       <span class="n">lty</span><span class="o">=</span><span class="nf">c</span><span class="p">(</span><span class="m">1</span><span class="p">,</span><span class="m">2</span><span class="p">,</span><span class="m">4</span><span class="p">,</span><span class="m">2</span><span class="p">,</span><span class="m">4</span><span class="p">),</span> <span class="n">cex</span> <span class="o">=</span> <span class="m">0.8</span><span class="p">)</span>
+
+<span class="nf">print</span><span class="p">(</span><span class="s">&quot;Best Fit Model: &quot;</span><span class="p">)</span>
+<span class="nf">print</span><span class="p">(</span><span class="nf">rmse</span><span class="p">(</span><span class="n">series.test</span><span class="p">,</span><span class="nf">forecast</span><span class="p">(</span><span class="n">ar</span><span class="p">,</span> <span class="m">8</span><span class="p">)</span><span class="o">$</span><span class="n">mean</span><span class="p">))</span>
+<span class="nf">print</span><span class="p">(</span><span class="s">&quot;Model with Gaussian Residuals: &quot;</span><span class="p">)</span>
+<span class="nf">print</span><span class="p">(</span><span class="nf">rmse</span><span class="p">(</span><span class="n">series.test</span><span class="p">,</span><span class="nf">forecast</span><span class="p">(</span><span class="n">mod.best</span><span class="p">,</span> <span class="m">8</span><span class="p">)</span><span class="o">$</span><span class="n">mean</span><span class="p">))</span>
+</pre></div>
+
+
+<p>The forecasted values for both models are similar. They both undershoot the actual values, and the RMSE scores differ by only 0.0004.</p>
+<p>Let's look at the 12-quarter ahead forecasts with confidence intervals:</p>
+<div class="highlight"><pre><span></span><span class="n">ar_forecast</span><span class="o">$</span><span class="n">lower</span> <span class="o">=</span> <span class="nf">exp</span><span class="p">(</span><span class="n">ar_forecast</span><span class="o">$</span><span class="n">lower</span><span class="p">)</span>
+<span class="n">ar_forecast</span><span class="o">$</span><span class="n">upper</span> <span class="o">=</span> <span class="nf">exp</span><span class="p">(</span><span class="n">ar_forecast</span><span class="o">$</span><span class="n">upper</span><span class="p">)</span>
+<span class="n">ar_forecast</span><span class="o">$</span><span class="n">mean</span> <span class="o">=</span> <span class="nf">exp</span><span class="p">(</span><span class="n">ar_forecast</span><span class="o">$</span><span class="n">mean</span><span class="p">)</span>
+<span class="n">ar_forecast</span><span class="o">$</span><span class="n">x</span> <span class="o">=</span> <span class="nf">exp</span><span class="p">(</span><span class="n">ar_forecast</span><span class="o">$</span><span class="n">x</span><span class="p">)</span>
+<span class="n">mod.best_forecast</span><span class="o">$</span><span class="n">lower</span> <span class="o">=</span> <span class="nf">exp</span><span class="p">(</span><span class="n">mod.best_forecast</span><span class="o">$</span><span class="n">lower</span><span class="p">)</span>
+<span class="n">mod.best_forecast</span><span class="o">$</span><span class="n">upper</span> <span class="o">=</span> <span class="nf">exp</span><span class="p">(</span><span class="n">mod.best_forecast</span><span class="o">$</span><span class="n">upper</span><span class="p">)</span>
+<span class="n">mod.best_forecast</span><span class="o">$</span><span class="n">mean</span> <span class="o">=</span> <span class="nf">exp</span><span class="p">(</span><span class="n">mod.best_forecast</span><span class="o">$</span><span class="n">mean</span><span class="p">)</span>
+<span class="n">mod.best_forecast</span><span class="o">$</span><span class="n">x</span> <span class="o">=</span> <span class="nf">exp</span><span class="p">(</span><span class="n">mod.best_forecast</span><span class="o">$</span><span class="n">x</span><span class="p">)</span>
+</pre></div>
+
+
+<p>```{r, fig.width=8, fig.height=3}
+par(mfrow = c(1, 2))</p>
+<h1>For manually fit seasonal model</h1>
+<p>plot(ar_forecast)</p>
+<h1>Best fit model with Gaussian residuals</h1>
+<p>plot(mod.best_forecast)</p>
+<div class="highlight"><pre><span></span><span class="n">We</span> <span class="n">see</span> <span class="n">that</span> <span class="n">the</span> <span class="n">forecasts</span> <span class="n">are</span> <span class="n">predicting</span> <span class="n">that</span> <span class="n">the</span> <span class="n">prevailing</span> <span class="n">trend</span> <span class="k">and</span> <span class="n">increasing</span> <span class="n">seasonality</span> <span class="n">will</span> <span class="k">continue</span><span class="p">,</span> <span class="k">with</span> <span class="n">the</span> <span class="n">confidence</span> <span class="n">intervals</span> <span class="n">widening</span> <span class="k">as</span> <span class="kt">time</span> <span class="n">progresses</span><span class="p">.</span>
+
+<span class="n">Below</span> <span class="n">we</span> <span class="n">explicitly</span> <span class="n">define</span> <span class="k">both</span> <span class="n">models</span><span class="p">:</span>
+
+<span class="n">Let</span><span class="p">:</span> <span class="err">$</span><span class="n">z_t</span> <span class="o">=</span> <span class="nf">log</span><span class="p">(</span><span class="n">y_t</span><span class="p">)</span><span class="err">$</span>
+
+<span class="o">**</span><span class="n">Model</span> <span class="mi">1</span><span class="p">:</span> <span class="p">:</span> <span class="n">Best</span> <span class="n">fit</span> <span class="n">without</span> <span class="n">Gaussian</span> <span class="n">residuals</span> <span class="n">requirement</span><span class="p">:</span><span class="o">**</span>
+
+<span class="err">$$</span>
+<span class="n">z_t</span><span class="o">-</span><span class="n">z_</span><span class="err">{</span><span class="n">t</span><span class="o">-</span><span class="mi">1</span><span class="err">}</span> <span class="o">=</span> <span class="o">-</span> <span class="mi">0</span><span class="p">.</span><span class="mi">6666</span> <span class="p">(</span><span class="n">y_</span><span class="err">{</span><span class="n">t</span><span class="o">-</span><span class="mi">4</span><span class="err">}</span> <span class="o">-</span> <span class="n">z_</span><span class="err">{</span><span class="n">t</span><span class="o">-</span><span class="mi">5</span><span class="err">}</span><span class="p">)</span> <span class="o">+</span> <span class="err">\</span><span class="n">omega_t</span>
+<span class="err">$$</span>
+
+<span class="o">**</span><span class="n">Model</span> <span class="mi">2</span><span class="p">:</span> <span class="p">:</span> <span class="n">Best</span> <span class="n">fit</span> <span class="k">with</span> <span class="n">Gaussian</span> <span class="n">residuals</span> <span class="n">requirement</span><span class="p">:</span><span class="o">**</span>
+
+<span class="err">$$</span>
+<span class="n">z_t</span> <span class="o">-</span> <span class="n">z_</span><span class="err">{</span><span class="n">t</span><span class="o">-</span><span class="mi">1</span><span class="err">}</span> <span class="o">=</span> <span class="mi">0</span><span class="p">.</span><span class="mi">1577</span> <span class="p">(</span><span class="n">z_</span><span class="err">{</span><span class="n">t</span><span class="o">-</span><span class="mi">1</span><span class="err">}</span> <span class="o">-</span> <span class="n">z_</span><span class="err">{</span><span class="n">t</span><span class="o">-</span><span class="mi">2</span><span class="err">}</span><span class="p">)</span> <span class="o">+</span> <span class="mi">0</span><span class="p">.</span><span class="mi">1743</span> <span class="p">(</span><span class="n">z_</span><span class="err">{</span><span class="n">t</span><span class="o">-</span><span class="mi">2</span><span class="err">}</span> <span class="o">-</span> <span class="n">z_</span><span class="err">{</span><span class="n">t</span><span class="o">-</span><span class="mi">3</span><span class="err">}</span><span class="p">)</span> <span class="o">-</span> <span class="mi">0</span><span class="p">.</span><span class="mi">1395</span> <span class="p">(</span><span class="n">z_</span><span class="err">{</span><span class="n">t</span><span class="o">-</span><span class="mi">3</span><span class="err">}</span> <span class="o">-</span> <span class="n">z_</span><span class="err">{</span><span class="n">t</span><span class="o">-</span><span class="mi">4</span><span class="err">}</span><span class="p">)</span> <span class="o">-</span> <span class="mi">0</span><span class="p">.</span><span class="mi">6743</span><span class="p">(</span> <span class="p">(</span><span class="n">z_</span><span class="err">{</span><span class="n">t</span><span class="o">-</span><span class="mi">4</span><span class="err">}</span><span class="o">-</span><span class="n">z_</span><span class="err">{</span><span class="n">t</span><span class="o">-</span><span class="mi">5</span><span class="err">}</span><span class="p">)</span> <span class="o">+</span> <span class="err">\</span><span class="n">omega_t</span> <span class="o">-</span><span class="mi">0</span><span class="p">.</span><span class="mi">2237</span> <span class="err">\</span><span class="n">omega_</span><span class="err">{</span><span class="n">t</span><span class="o">-</span><span class="mi">1</span><span class="err">}</span>
+<span class="err">$$</span>
+
+<span class="n">Despite</span> <span class="n">the</span> <span class="n">first</span> <span class="n">model</span><span class="s1">&#39;s parsimony, lower AICc score, and slightly better forecast performance to the second model, we prefer the second model since it met the Gaussian residuals assumption. We think that a model with Gaussian residuals will generally produce more reliable and accurate forecast intervals than a model without Gaussian residuals.</span>
+
+<span class="s1">## Conclusion</span>
+
+<span class="s1">After analyzing the E-commerce data via EDA and ACF/PACF plots, we fit two SARIMA models against the data and evaluated their out-of-sample forecast performance. Our first model, a $SARIMA(0,1,0)(1,1,0)_4$ model, was crafted based on our EDA findings. Despite achieving a low AICc and serially independent residuals, this model had residuals that showed evidence of a non-normal distribution. Non-Gaussian residuals could result in faulty confidence intervals, so we fit a second model programmatically. This model was found by iterating over different combinations of seasonal and non-seasonal AR and MA lag orders, and choosing the model with the lowest AICc score among the models with residuals that showed no evidence of serially dependent or non-Gaussian residuals and was determined to be $SARIMA(4,1,0)(0,1,0)_4$. Further modeling utilizing a daily, weekly or monthly period (rather than quarterly) may help to determine better model performance since the time series data is limited to approximately Q4 1999 (when e-commerce began to become available). With the data available, the $SARIMA(4,1,0)(0,1,0)_4$ model was chosen since it meets all assumptions and is beneficial for forecasting, however further analysis using more datapoints should be completed to indicate if this continues to be a strong performing model - since the model parameters do not match our intuition derived from EDA. </span>
+
+<span class="s1">In terms of forecasting and forecasted out of sample RMSE scores, he performance differences between the $SARIMA(0,1,0)(1,1,0)_4$ and $SARIMA(4,1,0)(0,1,0)_4$ model were negligible, and the forecast plots looked very similar. Perhaps with a longer series or more random data we would see larger differences between these two models.</span>
+
+
+
+<span class="s1"># Question 2: Learning how to use the xts library</span>
+
+<span class="s1">## Materials covered in Question 2 of this lab</span>
+
+<span class="s1">  - Primarily the references listed in this document:</span>
+
+<span class="s1">      - &quot;xts: Extensible Time Series&quot; by Jeffrey A. Ryan and Joshua M. Ulrich. 2008. (xts.pdf)</span>
+<span class="s1">      - &quot;xts FAQ&quot; by xts Development Team. 2013 (xts_faq.pdf)</span>
+<span class="s1">      - xts_cheatsheet.pdf</span>
+
+<span class="s1"># Task 1:</span>
+
+<span class="s1">  1. Read </span>
+<span class="s1">    A. The **Introduction** section (Section 1), which only has 1 page of reading of xts: Extensible Time Series&quot; by Jeffrey A. Ryan and Joshua M. Ulrich</span>
+<span class="s1">    B. The first three questions in&quot;xts FAQ&quot;</span>
+<span class="s1">        a. What is xts?</span>
+<span class="s1">        b. Why should I use xts rather than zoo or another time-series package?</span>
+<span class="s1">        c. HowdoIinstallxts?</span>
+<span class="s1">    C. The &quot;A quick introduction to xts and zoo objects&quot; section in this document</span>
+
+<span class="s1">  2. Read the &quot;A quick introduction to xts and zoo objects&quot; of this document</span>
+
+<span class="s1"># A quick introduction to xts and zoo objects</span>
+
+<span class="s1">### xts</span>
+<span class="s1">```xts```</span>
+<span class="s1">  - stands for eXtensible Time Series</span>
+<span class="s1">  - is an extended zoo object</span>
+<span class="s1">  - is essentially matrix + (time-based) index (aka, observation + time)</span>
+
+<span class="s1">  - xts is a constructor or a subclass that inherits behavior from parent (zoo); in fact, it extends the popular zoo class. As such. most zoo methods work for xts</span>
+<span class="s1">  - is a matrix objects; subsets always preserve the matrix form</span>
+<span class="s1">  - importantly, xts are indexed by a formal time object. Therefore, the data is time-stamped</span>
+<span class="s1">  - The two most important arguments are ```x``` for the data and ```order.by``` for the index. ```x``` must be a vector or matrix. ```order.by``` is a vector of the same length or number of rows of ```x```; it must be a proper time or date object and be in an increasing order</span>
+
+<span class="s1"># Task 2:</span>
+
+<span class="s1">  1. Read </span>
+<span class="s1">    A. Section 3.1 of &quot;xts: Extensible Time Series&quot; by Jeffrey A. Ryan and Joshua M. Ulrich</span>
+
+<span class="s1">    B. The following questions in &quot;xts FAQ&quot;</span>
+<span class="s1">        a. How do I create an xts index with millisecond precision?</span>
+<span class="s1">        b. OK, so now I have my millisecond series but I still can&#39;</span><span class="n">t</span> <span class="n">see</span> <span class="n">the</span> <span class="n">milliseconds</span> <span class="n">displayed</span><span class="p">.</span> <span class="n">What</span> <span class="n">went</span> <span class="n">wrong</span><span class="o">?</span>
+
+  <span class="mi">2</span><span class="p">.</span> <span class="n">Follow</span> <span class="n">the</span> <span class="n">following</span> <span class="n">section</span> <span class="n">of</span> <span class="n">this</span> <span class="n">document</span>
+
+
+<span class="c1"># Creating an xts object and converting to an xts object from an imported dataset</span>
+
+<span class="n">We</span> <span class="n">will</span> <span class="k">create</span> <span class="n">an</span> <span class="ss">`xts`</span> <span class="n">object</span> <span class="k">from</span> <span class="n">a</span> <span class="n">matrix</span> <span class="k">and</span> <span class="n">a</span> <span class="kt">time</span> <span class="k">index</span><span class="p">.</span> <span class="n">First</span><span class="p">,</span> <span class="n">let</span><span class="err">&#39;</span><span class="n">s</span> <span class="k">create</span> <span class="n">a</span> <span class="n">matrix</span> <span class="k">and</span> <span class="n">a</span> <span class="kt">time</span> <span class="k">index</span><span class="p">.</span>  <span class="n">The</span> <span class="n">matrix</span><span class="p">,</span> <span class="k">as</span> <span class="n">it</span> <span class="n">creates</span><span class="p">,</span> <span class="k">is</span> <span class="k">not</span> <span class="n">associated</span> <span class="k">with</span> <span class="n">the</span> <span class="kt">time</span> <span class="n">indext</span> <span class="n">yet</span><span class="p">.</span>
+
+<span class="ss">``</span><span class="o">`</span><span class="err">{</span><span class="n">r</span> <span class="n">include</span><span class="o">=</span><span class="no">FALSE</span><span class="err">}</span>
+<span class="c1">#rm(list = ls())</span>
+<span class="nf">library</span><span class="p">(</span><span class="n">knitr</span><span class="p">)</span>
+<span class="n">opts_chunk</span><span class="err">$</span><span class="kt">set</span><span class="p">(</span><span class="n">tidy</span><span class="p">.</span><span class="n">opts</span><span class="o">=</span><span class="nf">list</span><span class="p">(</span><span class="n">width</span><span class="p">.</span><span class="n">cutoff</span><span class="o">=</span><span class="mi">60</span><span class="p">),</span><span class="n">tidy</span><span class="o">=</span><span class="no">TRUE</span><span class="p">)</span>
+</pre></div>
+
+
+<div class="highlight"><pre><span></span><span class="c1"># Set working directory</span>
+<span class="nf">setwd</span><span class="p">(</span><span class="s">&quot;~/Berkeley MIDS/W271 Statistical Methods for Discrete Response, Time-Series, and Panel Data/repo/W271_Lab3&quot;</span><span class="p">)</span>
+</pre></div>
+
+
+<div class="highlight"><pre><span></span><span class="c1"># Create a matrix</span>
+<span class="n">x</span> <span class="o">&lt;-</span> <span class="nf">matrix</span><span class="p">(</span><span class="nf">rnorm</span><span class="p">(</span><span class="m">200</span><span class="p">),</span> <span class="n">ncol</span><span class="o">=</span><span class="m">2</span><span class="p">,</span> <span class="n">nrow</span><span class="o">=</span><span class="m">100</span><span class="p">)</span>
+<span class="nf">colnames</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">&lt;-</span> <span class="nf">c</span><span class="p">(</span><span class="s">&quot;Series01&quot;</span><span class="p">,</span> <span class="s">&quot;Series02&quot;</span><span class="p">)</span>
+<span class="nf">str</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="nf">head</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="m">10</span><span class="p">)</span>
+
+<span class="n">idx</span> <span class="o">&lt;-</span> <span class="nf">seq</span><span class="p">(</span><span class="nf">as.Date</span><span class="p">(</span><span class="s">&quot;2015/1/1&quot;</span><span class="p">),</span> <span class="n">by</span> <span class="o">=</span> <span class="s">&quot;day&quot;</span><span class="p">,</span> <span class="n">length.out</span> <span class="o">=</span> <span class="m">100</span><span class="p">)</span>
+<span class="nf">str</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span>
+<span class="nf">head</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span>
+<span class="nf">tail</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span>
+</pre></div>
+
+
+<p>In a nutshell, <code>xts</code> is a matrix indexed by a time object. To create an xts object, we "bind" the object with the index.  Since we have already created a matrix and a time index (of the same length as the number of rows of the matrix), we are ready to "bind" them together. We will name it <em>X</em>.</p>
+<div class="highlight"><pre><span></span><span class="nf">library</span><span class="p">(</span><span class="n">xts</span><span class="p">)</span>
+<span class="n">X</span> <span class="o">&lt;-</span> <span class="nf">xts</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">order.by</span><span class="o">=</span><span class="n">idx</span><span class="p">)</span>
+<span class="nf">str</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+<span class="nf">head</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="m">10</span><span class="p">)</span>
+</pre></div>
+
+
+<p>As you can see from the structure of an <code>xts</code> object, it contains both a data component and an index, indexed by an object of class <code>Date</code>.</p>
+<p><strong>xtx constructor</strong></p>
+<div class="highlight"><pre><span></span><span class="err">xts(x=Null,</span>
+<span class="err">    order.by=index(x),</span>
+<span class="err">    frequency=NULL,</span>
+<span class="err">    unique=NULL,</span>
+<span class="err">    tzone=Sys.getenv(&quot;TZ&quot;))</span>
+</pre></div>
+
+
+<p>As mentioned previous, the two most important arguments are <code>x</code> and <code>order.by</code>.  In fact, we only use these two arguments to create a xts object before.</p>
+<p>With a xts object, one can decompose it.</p>
+<h3>Deconstructing xts</h3>
+<p><code>coredata()</code> is used to extract the data component</p>
+<div class="highlight"><pre><span></span><span class="nf">head</span><span class="p">(</span><span class="nf">coredata</span><span class="p">(</span><span class="n">X</span><span class="p">),</span><span class="m">5</span><span class="p">)</span>
+</pre></div>
+
+
+<p><code>index()</code> is used to extract the index (aka times)</p>
+<div class="highlight"><pre><span></span><span class="nf">head</span><span class="p">(</span><span class="nf">index</span><span class="p">(</span><span class="n">X</span><span class="p">),</span><span class="m">5</span><span class="p">)</span>
+</pre></div>
+
+
+<h3>Conversion to xts from other time-series objects</h3>
+<p>We will use the same dataset "bls_unemployment.csv" that we used in the last live session to illustarte the functions below.</p>
+<div class="highlight"><pre><span></span><span class="n">df</span> <span class="o">&lt;-</span> <span class="nf">read.csv</span><span class="p">(</span><span class="s">&quot;bls_unemployment.csv&quot;</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="kc">TRUE</span><span class="p">,</span> <span class="n">stringsAsFactors</span> <span class="o">=</span> <span class="kc">FALSE</span><span class="p">)</span>
+
+<span class="c1"># Examine the data structure</span>
+  <span class="nf">str</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+  <span class="nf">names</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+  <span class="nf">head</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+  <span class="nf">tail</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+
+<span class="c1">#table(df$Series.id, useNA = &quot;always&quot;)</span>
+<span class="c1">#table(df$Period, useNA = &quot;always&quot;)</span>
+
+<span class="c1"># Convert a column of the data frame into a time-series object</span>
+<span class="n">unemp</span> <span class="o">&lt;-</span> <span class="nf">ts</span><span class="p">(</span><span class="n">df</span><span class="o">$</span><span class="n">Value</span><span class="p">,</span> <span class="n">start</span> <span class="o">=</span> <span class="nf">c</span><span class="p">(</span><span class="m">2007</span><span class="p">,</span><span class="m">1</span><span class="p">),</span> <span class="n">end</span> <span class="o">=</span> <span class="nf">c</span><span class="p">(</span><span class="m">2017</span><span class="p">,</span><span class="m">1</span><span class="p">),</span> <span class="n">frequency</span> <span class="o">=</span> <span class="m">12</span><span class="p">)</span>
+  <span class="nf">str</span><span class="p">(</span><span class="n">unemp</span><span class="p">)</span>
+  <span class="nf">head</span><span class="p">(</span><span class="nf">cbind</span><span class="p">(</span><span class="nf">time</span><span class="p">(</span><span class="n">unemp</span><span class="p">),</span> <span class="n">unemp</span><span class="p">),</span><span class="m">5</span><span class="p">)</span>
+
+<span class="c1"># Now, let&#39;s convert it to an xts object</span>
+<span class="n">df_matrix</span> <span class="o">&lt;-</span> <span class="nf">as.matrix</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+  <span class="nf">head</span><span class="p">(</span><span class="n">df_matrix</span><span class="p">)</span>
+  <span class="nf">str</span><span class="p">(</span><span class="n">df_matrix</span><span class="p">)</span>
+  <span class="nf">rownames</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+
+<span class="n">unemp_idx</span> <span class="o">&lt;-</span> <span class="nf">seq</span><span class="p">(</span><span class="nf">as.Date</span><span class="p">(</span><span class="s">&quot;2007/1/1&quot;</span><span class="p">),</span> <span class="n">by</span> <span class="o">=</span> <span class="s">&quot;month&quot;</span><span class="p">,</span> <span class="n">length.out</span> <span class="o">=</span> 
+<span class="nf">length</span><span class="p">(</span><span class="n">df</span><span class="p">[,</span><span class="m">1</span><span class="p">]))</span>
+  <span class="nf">head</span><span class="p">(</span><span class="n">unemp_idx</span><span class="p">)</span>
+
+<span class="n">unemp_xts</span> <span class="o">&lt;-</span> <span class="nf">xts</span><span class="p">(</span><span class="n">df</span><span class="o">$</span><span class="n">Value</span><span class="p">,</span> <span class="n">order.by</span> <span class="o">=</span> <span class="n">unemp_idx</span><span class="p">)</span>
+  <span class="nf">str</span><span class="p">(</span><span class="n">unemp_xts</span><span class="p">)</span>
+  <span class="nf">head</span><span class="p">(</span><span class="n">unemp_xts</span><span class="p">)</span>
+</pre></div>
+
+
+<h1>Task 3:</h1>
+<ol>
+<li>
+<p>Read 
+    A. Section 3.2 of "xts: Extensible Time Series" by Jeffrey A. Ryan and Joshua M. Ulrich</p>
+</li>
+<li>
+<p>Follow the following section of this document</p>
+</li>
+</ol>
+<h1>Merging and modifying time series</h1>
+<p>One of the key strengths of <code>xts</code> is that it is easy to join data by column and row using a only few different functions. It makes creating time series datasets almost effortless.</p>
+<p>The important criterion is that the xts objects must be of identical type (e.g. integer + integer), or be POSIXct dates vector, or be atomic vectors of the same type (e.g. numeric), or be a single NA. It does not work on data.frames with various column types.</p>
+<p>The major functions is <code>merge</code>.  It works like <code>cbind</code> or SQL's <code>join</code>:</p>
+<p>Let's look at an example. It assumes that you are familiar with concepts of inner join, outer join, left join, and right join.</p>
+<div class="highlight"><pre><span></span><span class="nf">library</span><span class="p">(</span><span class="n">quantmod</span><span class="p">)</span>
+<span class="nf">getSymbols</span><span class="p">(</span><span class="s">&quot;TWTR&quot;</span><span class="p">)</span>
+<span class="nf">head</span><span class="p">(</span><span class="n">TWTR</span><span class="p">)</span>
+<span class="nf">str</span><span class="p">(</span><span class="n">TWTR</span><span class="p">)</span>
+</pre></div>
+
+
+<p>Note that the date obtained from the getSymbols function of the quantmod library is already an xts object.  As such, we can merge it directly with our unemployment rate xts object constructed above. Nevertheless, it is instructive to examine the data using the View() function to ensure that you understand the number of observations resulting from the joined series.</p>
+<div class="highlight"><pre><span></span><span class="c1"># 1. Inner join</span>
+<span class="n">TWTR_unemp01</span> <span class="o">&lt;-</span> <span class="nf">merge</span><span class="p">(</span><span class="n">unemp_xts</span><span class="p">,</span> <span class="n">TWTR</span><span class="p">,</span> <span class="n">join</span> <span class="o">=</span> <span class="s">&quot;inner&quot;</span><span class="p">)</span>
+  <span class="nf">str</span><span class="p">(</span><span class="n">TWTR_unemp01</span><span class="p">)</span>
+  <span class="nf">head</span><span class="p">(</span><span class="n">TWTR_unemp01</span><span class="p">)</span>
+
+<span class="c1"># 2. Outer join (filling the missing observations with 99999)</span>
+<span class="c1"># Basic argument use</span>
+<span class="n">TWTR_unemp02</span> <span class="o">&lt;-</span> <span class="nf">merge</span><span class="p">(</span><span class="n">unemp_xts</span><span class="p">,</span> <span class="n">TWTR</span><span class="p">,</span> <span class="n">join</span> <span class="o">=</span> <span class="s">&quot;outer&quot;</span><span class="p">,</span> <span class="n">fill</span> <span class="o">=</span> <span class="m">99999</span><span class="p">)</span>
+  <span class="nf">str</span><span class="p">(</span><span class="n">TWTR_unemp02</span><span class="p">)</span>
+  <span class="nf">head</span><span class="p">(</span><span class="n">TWTR_unemp02</span><span class="p">)</span>
+  <span class="c1">#View(TWTR_unemp02)</span>
+
+<span class="c1"># Left join</span>
+<span class="n">TWTR_unemp03</span> <span class="o">&lt;-</span> <span class="nf">merge</span><span class="p">(</span><span class="n">unemp_xts</span><span class="p">,</span> <span class="n">TWTR</span><span class="p">,</span> <span class="n">join</span> <span class="o">=</span> <span class="s">&quot;left&quot;</span><span class="p">,</span> <span class="n">fill</span> <span class="o">=</span> <span class="m">99999</span><span class="p">)</span>
+  <span class="nf">str</span><span class="p">(</span><span class="n">TWTR_unemp03</span><span class="p">)</span>
+  <span class="nf">head</span><span class="p">(</span><span class="n">TWTR_unemp03</span><span class="p">)</span>
+  <span class="c1">#View(TWTR_unemp03)</span>
+
+<span class="c1"># Right join</span>
+<span class="n">TWTR_unemp04</span> <span class="o">&lt;-</span> <span class="nf">merge</span><span class="p">(</span><span class="n">unemp_xts</span><span class="p">,</span> <span class="n">TWTR</span><span class="p">,</span> <span class="n">join</span> <span class="o">=</span> <span class="s">&quot;right&quot;</span><span class="p">,</span> <span class="n">fill</span> <span class="o">=</span> <span class="m">99999</span><span class="p">)</span>
+  <span class="nf">str</span><span class="p">(</span><span class="n">TWTR_unemp04</span><span class="p">)</span>
+  <span class="nf">head</span><span class="p">(</span><span class="n">TWTR_unemp04</span><span class="p">)</span>
+  <span class="c1">#View(TWTR_unemp04)</span>
+</pre></div>
+
+
+<h1>Missing value imputation</h1>
+<p>xts also offers methods that allows filling missing values using last or previous observation. Note that I include this simply to point out that this is possible. I by no mean certify that this is the preferred method of imputing missing values in a time series.  As I mentioned in live session, the specific method to use in missing value imputation is completely context dependent.</p>
+<p>Filling missing values from the last observation</p>
+<div class="highlight"><pre><span></span><span class="c1"># First, let&#39;s replace the &quot;99999&quot; values with NA and then exammine the series. </span>
+
+<span class="c1"># Let&#39;s examine the first few dozen observations with NA</span>
+<span class="n">TWTR_unemp02</span><span class="p">[</span><span class="s">&#39;2013-10-01/2013-12-15&#39;</span><span class="p">][,</span><span class="m">1</span><span class="p">]</span>
+
+<span class="c1"># Replace observations with &quot;99999&quot; with NA and store in a new series</span>
+<span class="n">unemp01</span> <span class="o">&lt;-</span> <span class="n">TWTR_unemp02</span><span class="p">[,</span> <span class="m">1</span><span class="p">]</span>
+<span class="n">unemp01</span><span class="p">[</span><span class="s">&#39;2013-10-01/2013-12-15&#39;</span><span class="p">]</span>
+<span class="nf">str</span><span class="p">(</span><span class="n">unemp01</span><span class="p">)</span>
+<span class="nf">head</span><span class="p">(</span><span class="n">unemp01</span><span class="p">)</span>
+<span class="c1">#TWTR_unemp02[, 1][TWTR_unemp02[, 1] &gt;= 99990] &lt;- NA</span>
+
+<span class="n">unemp02</span> <span class="o">&lt;-</span> <span class="n">unemp01</span>
+<span class="n">unemp02</span><span class="p">[</span><span class="n">unemp02</span> <span class="o">&gt;=</span> <span class="m">99990</span><span class="p">]</span> <span class="o">&lt;-</span> <span class="kc">NA</span>
+
+<span class="nf">cbind</span><span class="p">(</span><span class="n">unemp01</span><span class="p">[</span><span class="s">&#39;2013-10-01/2013-12-15&#39;</span><span class="p">],</span> <span class="n">unemp02</span><span class="p">[</span><span class="s">&#39;2013-10-01/2013-12-15&#39;</span><span class="p">])</span>
+
+<span class="c1"># Impute the missing values (stored as NA) with the last observation</span>
+<span class="n">TWTR_unemp02_v2a</span> <span class="o">&lt;-</span> <span class="nf">na.locf</span><span class="p">(</span><span class="n">TWTR_unemp02</span><span class="p">[,</span><span class="m">1</span><span class="p">],</span> 
+                            <span class="n">na.rm</span> <span class="o">=</span> <span class="kc">TRUE</span><span class="p">,</span> <span class="n">fromLast</span> <span class="o">=</span> <span class="kc">TRUE</span><span class="p">)</span> 
+<span class="n">unemp03</span> <span class="o">&lt;-</span> <span class="n">unemp02</span>
+<span class="n">unemp03</span> <span class="o">&lt;-</span> <span class="nf">na.locf</span><span class="p">(</span><span class="n">unemp03</span><span class="p">,</span> <span class="n">na.rm</span> <span class="o">=</span> <span class="kc">TRUE</span><span class="p">,</span> <span class="n">fromLast</span> <span class="o">=</span> <span class="kc">FALSE</span><span class="p">);</span>
+
+<span class="c1"># Examine the pre- and post-imputed series</span>
+<span class="nf">cbind</span><span class="p">(</span><span class="n">TWTR_unemp02</span><span class="p">[</span><span class="s">&#39;2013-10-01/2013-12-30&#39;</span><span class="p">][,</span><span class="m">1</span><span class="p">],</span> <span class="n">TWTR_unemp02_v2a</span><span class="p">[</span><span class="s">&#39;2013-10-01/2013-12-15&#39;</span><span class="p">])</span>
+
+<span class="nf">cbind</span><span class="p">(</span><span class="n">unemp01</span><span class="p">[</span><span class="s">&#39;2013-10-01/2013-12-15&#39;</span><span class="p">],</span> <span class="n">unemp02</span><span class="p">[</span><span class="s">&#39;2013-10-01/2013-12-15&#39;</span><span class="p">],</span>
+<span class="n">unemp03</span><span class="p">[</span><span class="s">&#39;2013-10-01/2013-12-15&#39;</span><span class="p">])</span>
+</pre></div>
+
+
+<p>Another missing value imputation method is linear interpolation, which can also be easily done in xts objects. In the following example, we use linear interpolation to fill in the NA in between months.  The result is stored in <code>unemp04</code>. Note in the following the different ways of imputing missing values.</p>
+<div class="highlight"><pre><span></span><span class="n">unemp04</span> <span class="o">&lt;-</span> <span class="n">unemp02</span>
+<span class="n">unemp04</span><span class="p">[</span><span class="s">&#39;2013-10-01/2014-02-01&#39;</span><span class="p">]</span>
+<span class="n">unemp04</span> <span class="o">&lt;-</span> <span class="nf">na.approx</span><span class="p">(</span><span class="n">unemp04</span><span class="p">,</span> <span class="n">maxgap</span><span class="o">=</span><span class="m">31</span><span class="p">)</span>
+<span class="n">unemp04</span><span class="p">[</span><span class="s">&#39;2013-10-01/2014-02-01&#39;</span><span class="p">]</span>
+
+<span class="nf">round</span><span class="p">(</span><span class="nf">cbind</span><span class="p">(</span><span class="n">unemp01</span><span class="p">[</span><span class="s">&#39;2013-10-01/2013-12-15&#39;</span><span class="p">],</span> <span class="n">unemp02</span><span class="p">[</span><span class="s">&#39;2013-10-01/2013-12-15&#39;</span><span class="p">],</span>
+<span class="n">unemp03</span><span class="p">[</span><span class="s">&#39;2013-10-01/2013-12-15&#39;</span><span class="p">],</span>
+<span class="n">unemp04</span><span class="p">[</span><span class="s">&#39;2013-10-01/2013-12-15&#39;</span><span class="p">]),</span><span class="m">2</span><span class="p">)</span>
+</pre></div>
+
+
+<h2>Calculate difference in time series</h2>
+<p>A very common operation on time series is to take a difference of the series to transform a non-stationary serier to a stationary series. First order differencing takes the form $x(t) - x(t-k)$ where $k$ denotes the number of time lags. Higher order differences are simply the reapplication of a difference to each prior result (like a second derivative or a difference of the difference).</p>
+<p>Let's use the <code>unemp_xts</code> series as examples:</p>
+<div class="highlight"><pre><span></span><span class="nf">str</span><span class="p">(</span><span class="n">unemp_xts</span><span class="p">)</span>
+<span class="n">unemp_xts</span>
+
+<span class="nf">diff</span><span class="p">(</span><span class="n">unemp_xts</span><span class="p">,</span> <span class="n">lag</span> <span class="o">=</span> <span class="m">1</span><span class="p">,</span> <span class="n">difference</span> <span class="o">=</span> <span class="m">1</span><span class="p">,</span> <span class="n">log</span> <span class="o">=</span> <span class="kc">FALSE</span><span class="p">,</span> <span class="n">na.pad</span> <span class="o">=</span> <span class="kc">TRUE</span><span class="p">)</span>
+
+<span class="c1"># calculate the first difference of AirPass using lag and subtraction</span>
+<span class="c1">#AirPass - lag(AirPass, k = 1)</span>
+
+<span class="c1"># calculate the first order 12-month difference if AirPass</span>
+<span class="nf">diff</span><span class="p">(</span><span class="n">unemp_xts</span><span class="p">,</span> <span class="n">lag</span> <span class="o">=</span> <span class="m">12</span><span class="p">,</span> <span class="n">differences</span> <span class="o">=</span> <span class="m">1</span><span class="p">)</span>
+</pre></div>
+
+
+<h1>Task 4:</h1>
+<ol>
+<li>
+<p>Read 
+    A. Section 3.4 of "xts: Extensible Time Series" by Jeffrey A. Ryan and Joshua M. Ulrich</p>
+<p>B. the following questions in "xts FAQ"
+    a. I am using apply() to run a custom function on my xts series. Why the returned matrix has di↵erent dimensions than the original one?</p>
+</li>
+</ol>
+<p>It is possible to apply to a particular period (month, day, etc). If the time series for instance has a second period, but we apply by minute, then we have reduced the dimension length by 60. </p>
+<ol>
+<li>Follow the following two sections of this document</li>
+</ol>
+<h1>Apply various functions to time series</h1>
+<p>The family of <code>apply</code> functions perhaps is one of the most powerful R function families. In time series, <code>xts</code> provides <code>period.apply</code>, which takes (1) a time series, (2) an index of endpoints, and (3) a function to apply.  It takes the following general form:</p>
+<div class="highlight"><pre><span></span><span class="err">period.apply(x, INDEX, FUN, ...)</span>
+</pre></div>
+
+
+<p>As an example, we use the Twitter stock price series (to be precise, the daily closing price), create an index storing the points corresopnding to the weeks of the daily series, and apply functions to calculate the weekly mean. </p>
+<div class="highlight"><pre><span></span><span class="c1"># Step 1: Identify the endpoints; in this case, we use weekly time interval. That is, we extract the end index on each week of the series</span>
+
+<span class="c1">#View(TWTR)</span>
+<span class="nf">head</span><span class="p">(</span><span class="n">TWTR</span><span class="p">)</span>
+<span class="n">TWTR_ep</span> <span class="o">&lt;-</span> <span class="nf">endpoints</span><span class="p">(</span><span class="n">TWTR</span><span class="p">[,</span><span class="m">4</span><span class="p">],</span> <span class="n">on</span> <span class="o">=</span> <span class="s">&quot;weeks&quot;</span><span class="p">)</span>
+<span class="c1">#TWTR_ep</span>
+
+<span class="c1"># Step 2: Calculate the weekly mean</span>
+<span class="n">TWTR.Close_weeklyMean</span> <span class="o">&lt;-</span> <span class="nf">period.apply</span><span class="p">(</span><span class="n">TWTR</span><span class="p">[,</span> <span class="m">4</span><span class="p">],</span> <span class="n">INDEX</span> <span class="o">=</span> <span class="n">TWTR_ep</span><span class="p">,</span> <span class="n">FUN</span> <span class="o">=</span> <span class="n">mean</span><span class="p">)</span>
+<span class="nf">head</span><span class="p">(</span><span class="nf">round</span><span class="p">(</span><span class="n">TWTR.Close_weeklyMean</span><span class="p">,</span><span class="m">2</span><span class="p">),</span><span class="m">8</span><span class="p">)</span>
+</pre></div>
+
+
+<p>The power of the apply function really comes with the use of custom-defined function. For instance, we can easily </p>
+<div class="highlight"><pre><span></span><span class="n">f</span> <span class="o">&lt;-</span> <span class="nf">function</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="p">{</span>
+  <span class="n">mean</span> <span class="o">&lt;-</span> <span class="nf">mean</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+  <span class="n">quantile</span> <span class="o">&lt;-</span> <span class="nf">quantile</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="nf">c</span><span class="p">(</span><span class="m">0.05</span><span class="p">,</span><span class="m">0.25</span><span class="p">,</span><span class="m">0.50</span><span class="p">,</span><span class="m">0.75</span><span class="p">,</span><span class="m">0.95</span><span class="p">))</span>
+  <span class="n">sd</span> <span class="o">&lt;-</span> <span class="nf">sd</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+
+  <span class="n">result</span> <span class="o">&lt;-</span> <span class="nf">c</span><span class="p">(</span><span class="n">mean</span><span class="p">,</span> <span class="n">sd</span><span class="p">,</span> <span class="n">quantile</span><span class="p">)</span>
+  <span class="nf">return</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+<span class="p">}</span>
+<span class="nf">head</span><span class="p">(</span><span class="nf">round</span><span class="p">(</span><span class="nf">period.apply</span><span class="p">(</span><span class="n">TWTR</span><span class="p">[,</span> <span class="m">4</span><span class="p">],</span> <span class="n">INDEX</span> <span class="o">=</span> <span class="n">TWTR_ep</span><span class="p">,</span> <span class="n">FUN</span> <span class="o">=</span> <span class="n">f</span><span class="p">),</span><span class="m">2</span><span class="p">),</span><span class="m">10</span><span class="p">)</span>
+</pre></div>
+
+
+<h1>Calculate basic rolling statistics  of series by month</h1>
+<p>Using <code>rollapply</code>, one can calculate rolling statistics of a series:</p>
+<div class="highlight"><pre><span></span><span class="c1"># Calculate rolling mean over a 10-day period and print it with the original series</span>
+<span class="nf">head</span><span class="p">(</span><span class="nf">cbind</span><span class="p">(</span><span class="n">TWTR</span><span class="p">[,</span><span class="m">4</span><span class="p">],</span> <span class="nf">rollapply</span><span class="p">(</span><span class="n">TWTR</span><span class="p">[,</span> <span class="m">4</span><span class="p">],</span> <span class="m">10</span><span class="p">,</span> <span class="n">FUN</span> <span class="o">=</span> <span class="n">mean</span><span class="p">,</span> <span class="n">na.rm</span> <span class="o">=</span> <span class="kc">TRUE</span><span class="p">)),</span><span class="m">15</span><span class="p">)</span>
+</pre></div>
+
+
+<h1>Task 5:</h1>
+<ol>
+<li>Read AMAZ.csv and UMCSENT.csv into R as R DataFrames</li>
+</ol>
+<div class="highlight"><pre><span></span><span class="n">AMAZ</span> <span class="o">&lt;-</span> <span class="nf">read.csv</span><span class="p">(</span><span class="s">&quot;AMAZ.csv&quot;</span><span class="p">)</span>
+  <span class="nf">head</span><span class="p">(</span><span class="n">AMAZ</span><span class="p">)</span>
+  <span class="nf">tail</span><span class="p">(</span><span class="n">AMAZ</span><span class="p">)</span>
+  <span class="nf">str</span><span class="p">(</span><span class="n">AMAZ</span><span class="p">)</span>
+  <span class="nf">summary</span><span class="p">(</span><span class="n">AMAZ</span><span class="p">)</span>
+<span class="n">UMCSENT</span> <span class="o">&lt;-</span> <span class="nf">read.csv</span><span class="p">(</span><span class="s">&quot;UMCSENT.csv&quot;</span><span class="p">)</span>
+  <span class="nf">head</span><span class="p">(</span><span class="n">UMCSENT</span><span class="p">)</span>
+  <span class="nf">tail</span><span class="p">(</span><span class="n">UMCSENT</span><span class="p">)</span>
+  <span class="nf">str</span><span class="p">(</span><span class="n">UMCSENT</span><span class="p">)</span>
+  <span class="nf">summary</span><span class="p">(</span><span class="n">UMCSENT</span><span class="p">)</span>
+</pre></div>
+
+
+<p>AMAZ seem to contain daily value with start date as 2007-01-03 and end date as 2013-01-13
+UMCSENT seem to contain monthly value with start date as 1978-01-01 and end date as 2017-09-01</p>
+<ol>
+<li>Convert them to xts objects</li>
+</ol>
+<div class="highlight"><pre><span></span><span class="n">AMAZ</span><span class="o">$</span><span class="n">Index</span> <span class="o">&lt;-</span> <span class="nf">strptime</span><span class="p">(</span><span class="n">AMAZ</span><span class="o">$</span><span class="n">Index</span><span class="p">,</span> <span class="s">&quot;%Y-%m-%d&quot;</span><span class="p">)</span>
+<span class="n">AMAZ_xts</span> <span class="o">&lt;-</span> <span class="nf">xts</span><span class="p">(</span><span class="n">AMAZ</span><span class="p">[,</span> <span class="m">-1</span><span class="p">],</span> <span class="n">order.by</span> <span class="o">=</span> <span class="n">AMAZ</span><span class="p">[,</span><span class="m">1</span><span class="p">])</span>
+<span class="nf">head</span><span class="p">(</span><span class="n">AMAZ_xts</span><span class="p">)</span>
+<span class="nf">str</span><span class="p">(</span><span class="n">AMAZ_xts</span><span class="p">)</span>
+</pre></div>
+
+
+<div class="highlight"><pre><span></span><span class="n">UMCSENT</span><span class="o">$</span><span class="n">Index</span> <span class="o">&lt;-</span> <span class="nf">strptime</span><span class="p">(</span><span class="n">UMCSENT</span><span class="o">$</span><span class="n">Index</span><span class="p">,</span> <span class="s">&quot;%Y-%m-%d&quot;</span><span class="p">)</span>
+<span class="n">UMCSENT_xts</span> <span class="o">&lt;-</span> <span class="nf">xts</span><span class="p">(</span><span class="n">UMCSENT</span><span class="p">[,</span> <span class="m">-1</span><span class="p">],</span> <span class="n">order.by</span> <span class="o">=</span> <span class="n">UMCSENT</span><span class="p">[,</span><span class="m">1</span><span class="p">])</span>
+<span class="nf">head</span><span class="p">(</span><span class="n">UMCSENT_xts</span><span class="p">)</span>
+<span class="nf">str</span><span class="p">(</span><span class="n">UMCSENT_xts</span><span class="p">)</span>
+</pre></div>
+
+
+<ol>
+<li>Merge the two set of series together, perserving all of the obserbvations in both set of series
+    a. fill all of the missing values of the UMCSENT series with -9999</li>
+</ol>
+<div class="highlight"><pre><span></span><span class="n">merged</span> <span class="o">&lt;-</span> <span class="nf">merge</span><span class="p">(</span><span class="n">UMCSENT_xts</span><span class="p">,</span> <span class="n">AMAZ_xts</span><span class="p">,</span> <span class="n">join</span> <span class="o">=</span> <span class="s">&quot;outer&quot;</span><span class="p">)</span>
+<span class="n">UMCSENT01</span> <span class="o">&lt;-</span> <span class="n">merged</span><span class="p">[,</span><span class="m">1</span><span class="p">]</span>
+<span class="n">UMCSENT01</span><span class="p">[</span><span class="nf">is.na</span><span class="p">(</span><span class="n">UMCSENT01</span><span class="p">)]</span> <span class="o">&lt;-</span> <span class="m">-9999</span>
+<span class="n">merged</span><span class="p">[,</span><span class="m">1</span><span class="p">]</span> <span class="o">&lt;-</span> <span class="n">UMCSENT01</span>
+<span class="nf">tail</span><span class="p">(</span><span class="n">UMCSENT01</span><span class="p">)</span>
+</pre></div>
+
+
+<div class="highlight"><pre><span></span><span class="nf">rbind</span><span class="p">(</span><span class="nf">head</span><span class="p">(</span><span class="n">merged</span><span class="p">),</span> <span class="n">merged</span><span class="p">[</span><span class="s">&#39;2011-07-01/2011-08-09&#39;</span><span class="p">],</span> <span class="nf">tail</span><span class="p">(</span><span class="n">merged</span><span class="p">))</span>
+</pre></div>
+
+
+<div class="highlight"><pre><span></span><span class="err">b. then create a new series, named UMCSENT02, from the original  UMCSENT series replace all of the -9999 with NAs</span>
+</pre></div>
+
+
+<div class="highlight"><pre><span></span><span class="n">UMCSENT02</span> <span class="o">&lt;-</span> <span class="n">UMCSENT01</span>
+<span class="n">UMCSENT02</span><span class="p">[</span><span class="n">UMCSENT02</span> <span class="o">&lt;</span> <span class="m">-9990</span><span class="p">]</span> <span class="o">&lt;-</span> <span class="kc">NA</span>
+</pre></div>
+
+
+<div class="highlight"><pre><span></span><span class="err">c. then create a new series, named UMCSENT03, and replace the NAs with the last observation</span>
+</pre></div>
+
+
+<div class="highlight"><pre><span></span><span class="n">UMCSENT03</span> <span class="o">&lt;-</span> <span class="n">UMCSENT02</span>
+<span class="n">UMCSENT03</span> <span class="o">&lt;-</span> <span class="nf">na.locf</span><span class="p">(</span><span class="n">UMCSENT02</span><span class="p">,</span> <span class="n">na.rm</span> <span class="o">=</span> <span class="kc">TRUE</span><span class="p">,</span> <span class="n">fromLast</span> <span class="o">=</span> <span class="kc">TRUE</span><span class="p">)</span>
+</pre></div>
+
+
+<div class="highlight"><pre><span></span><span class="err">d. then create a new series, named UMCSENT04, and replace the NAs using linear interpolation.</span>
+</pre></div>
+
+
+<div class="highlight"><pre><span></span><span class="n">UMCSENT04</span> <span class="o">&lt;-</span> <span class="n">UMCSENT02</span>
+<span class="n">UMCSENT04</span> <span class="o">&lt;-</span> <span class="nf">na.approx</span><span class="p">(</span><span class="n">UMCSENT04</span><span class="p">,</span> <span class="n">maxgap</span><span class="o">=</span><span class="m">31</span><span class="p">)</span>
+</pre></div>
+
+
+<div class="highlight"><pre><span></span><span class="err">e. Print out some observations to ensure that your merge as well as the missing value imputation are done correctly. I leave it up to you to decide exactly how many observations to print; do something that makes sense. (Hint: Do not print out the entire dataset!)</span>
+</pre></div>
+
+
+<div class="highlight"><pre><span></span><span class="n">binded</span> <span class="o">&lt;-</span> <span class="nf">cbind</span><span class="p">(</span><span class="n">UMCSENT01</span><span class="p">,</span> <span class="n">UMCSENT02</span><span class="p">,</span> <span class="n">UMCSENT03</span><span class="p">,</span> <span class="n">UMCSENT04</span><span class="p">,</span> <span class="n">merged</span><span class="p">[,</span><span class="m">-1</span><span class="p">])</span>
+<span class="n">binded</span><span class="p">[</span><span class="s">&#39;2011-07-01/2011-08-09&#39;</span><span class="p">]</span>
+</pre></div>
+
+
+<ol>
+<li>Calculate the daily return of the Amazon closing price (AMAZ.close), where daily return is defined as $(x(t)-x(t-1))/x(t-1)$. Plot the daily return series.</li>
+</ol>
+<div class="highlight"><pre><span></span><span class="n">daily_return</span> <span class="o">&lt;-</span> <span class="nf">diff</span><span class="p">(</span><span class="n">AMAZ_xts</span><span class="p">[,</span><span class="m">4</span><span class="p">])</span><span class="o">/</span><span class="nf">lag</span><span class="p">(</span><span class="n">AMAZ_xts</span><span class="p">[,</span><span class="m">4</span><span class="p">])</span>
+</pre></div>
+
+
+<div class="highlight"><pre><span></span><span class="nf">plot</span><span class="p">(</span><span class="n">daily_return</span><span class="p">)</span>
+</pre></div>
+
+
+<ol>
+<li>Create a 20-day and a 50-day rolling mean series from the AMAZ.close series.</li>
+</ol>
+<div class="highlight"><pre><span></span><span class="c1"># Calculate rolling mean over a 20-day period and print it with the original series</span>
+<span class="n">Twenty_day_rolling</span> <span class="o">&lt;-</span> <span class="nf">cbind</span><span class="p">(</span><span class="n">AMAZ</span><span class="p">[,</span><span class="m">4</span><span class="p">],</span> <span class="nf">rollapply</span><span class="p">(</span><span class="n">AMAZ</span><span class="p">[,</span><span class="m">4</span><span class="p">],</span> <span class="m">20</span><span class="p">,</span> <span class="n">FUN</span> <span class="o">=</span> <span class="n">mean</span><span class="p">,</span> <span class="n">na.rm</span> <span class="o">=</span> <span class="kc">TRUE</span><span class="p">))</span>
+<span class="nf">head</span><span class="p">(</span><span class="n">Twenty_day_rolling</span><span class="p">,</span><span class="m">15</span><span class="p">)</span>
+<span class="nf">plot</span><span class="p">(</span><span class="n">Twenty_day_rolling</span><span class="p">[,</span><span class="m">2</span><span class="p">])</span>
+</pre></div>
+
+
+<div class="highlight"><pre><span></span><span class="c1"># Calculate rolling mean over a 50-day period and print it with the original series</span>
+<span class="n">Fifty_day_rolling</span> <span class="o">&lt;-</span> <span class="nf">cbind</span><span class="p">(</span><span class="n">AMAZ</span><span class="p">[,</span><span class="m">4</span><span class="p">],</span> <span class="nf">rollapply</span><span class="p">(</span><span class="n">AMAZ</span><span class="p">[,</span><span class="m">4</span><span class="p">],</span> <span class="m">50</span><span class="p">,</span> <span class="n">FUN</span> <span class="o">=</span> <span class="n">mean</span><span class="p">,</span> <span class="n">na.rm</span> <span class="o">=</span> <span class="kc">TRUE</span><span class="p">))</span>
+<span class="nf">head</span><span class="p">(</span><span class="n">Fifty_day_rolling</span><span class="p">,</span><span class="m">15</span><span class="p">)</span>
+<span class="nf">plot</span><span class="p">(</span><span class="n">Fifty_day_rolling</span><span class="p">[,</span><span class="m">2</span><span class="p">])</span>
+</pre></div></p>
+        </div>
+    </div>
+
+<div class="fh5co-narrow-content">
+<div class="animate-box" data-animate-effect="fadeInLeft">
+    <h2><!-- <i class="icon-speech-bubble"></i>  -->Comments</h2>
+</div>
+<div class="animate-box" data-animate-effect="fadeInLeft">
+    <div id="disqus_thread"></div>
+</div>
+
+<script>
+var disqus_config = function () { 
+  this.language = "english";
+};
+(function() { // DON'T EDIT BELOW THIS LINE
+var d = document, s = d.createElement('script');
+s.src = 'https://.disqus.com/embed.js';
+s.setAttribute('data-timestamp', +new Date());
+(d.head || d.body).appendChild(s);
+})();
+</script>
+<noscript><a href="https://disqus.com/?ref_noscript">Please enable JavaScript to view the comments powered by Disqus.</a></noscript>
+<div class="fh5co-footer">
+    <p><small>&copy; 2016 Blend Free HTML5. All Rights Reserved.</span> <span>Designed by <a href="http://freehtml5.co/" target="_blank">FreeHTML5.co</a></span>
+    <br /><span>Pelican Theme by: <a href="https://github.com/claudio-walser/pelican-fh5co-marble" target="_blank">Claudio Walser</a></span></small></p>
+
+</div>                
+        </div>
+    </div>
+
+    <!-- jQuery -->
+    <script src="https://aaron-j-olson.com/theme/js/jquery.min.js"></script>
+    <!-- jQuery Easing -->
+    <script src="https://aaron-j-olson.com/theme/js/jquery.easing.1.3.js"></script>
+    <!-- Bootstrap -->
+    <script src="https://aaron-j-olson.com/theme/js/bootstrap.min.js"></script>
+    <!-- Waypoints -->
+    <script src="https://aaron-j-olson.com/theme/js/jquery.waypoints.min.js"></script>
+    <!-- Flexslider -->
+    <script src="https://aaron-j-olson.com/theme/js/jquery.flexslider-min.js"></script>
+
+
+    <!-- MAIN JS -->
+    <script src="https://aaron-j-olson.com/theme/js/main.js"></script>
+    </body>
+</html>

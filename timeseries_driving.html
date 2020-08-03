@@ -1,0 +1,531 @@
+
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+    <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Time Series Analysis - Driving Records 25 year history United States</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <meta name="author" content="Himal Suthar, XT Nguyen, Aaron Olson" />
+    <meta name="description" content="Statistical Analysis applied to Retail Sales" />
+    <meta name="keywords" content="python, gradient boost, decision tree, spark, pyspark">
+<!-- Facebook and Twitter integration -->
+<meta property="og:site_name" content="Aaron J. Olson - Portfolio"/>
+<meta property="og:title" content="Time Series Analysis - Driving Records 25 year history United States"/>
+<meta property="og:description" content="Statistical Analysis applied to Retail Sales"/>
+<meta property="og:url" content="https://aaron-j-olson.com/timeseries_driving.html"/>
+<meta property="og:type" content="article"/>
+<meta property="article:published_time" content="2018-03-08 20:00:00-05:00"/>
+<meta property="article:modified_time" content=""/>
+<meta property="article:author" content="https://aaron-j-olson.com/author/himal-suthar-xt-nguyen-aaron-olson.html">
+<meta property="article:section" content="posts"/>
+    <meta property="article:tag" content="python"/>
+    <meta property="article:tag" content="gradient boost"/>
+    <meta property="article:tag" content="decision tree"/>
+    <meta property="article:tag" content="spark"/>
+    <meta property="article:tag" content="pyspark"/>
+    <meta property="og:image" content="\images\olson.JPG">
+
+    <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700" rel="stylesheet">
+
+    <!-- Animate.css -->
+    <link rel="stylesheet" href="https://aaron-j-olson.com/theme/css/animate.css">
+    <!-- Icomoon Icon Fonts-->
+    <link rel="stylesheet" href="https://aaron-j-olson.com/theme/css/icomoon.css">
+    <!-- Bootstrap  -->
+    <link rel="stylesheet" href="https://aaron-j-olson.com/theme/css/bootstrap.css">
+    <!-- Flexslider  -->
+    <link rel="stylesheet" href="https://aaron-j-olson.com/theme/css/flexslider.css">
+    <!-- Theme style  -->
+    <link rel="stylesheet" href="https://aaron-j-olson.com/theme/css/style.css">
+    <!-- Custom style  -->
+    <link rel="stylesheet" href="https://aaron-j-olson.com/theme/css/custom.css">
+    <!-- pygments code highlight -->
+    <link rel="stylesheet" href="https://aaron-j-olson.com/theme/css/pygments.css">
+    <!-- tipue search -->
+    <link rel="stylesheet" href="https://aaron-j-olson.com/theme/tipuesearch/css/tipuesearch.css">
+
+    <!-- Modernizr JS -->
+    <script src="https://aaron-j-olson.com/theme/js/modernizr-2.6.2.min.js"></script>
+    <!-- FOR IE9 below -->
+    <!--[if lt IE 9]>
+    <script src="/theme/js/respond.min.js"></script>
+    <![endif]-->
+        <link href="https://aaron-j-olson.com/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Aaron J. Olson - Portfolio Atom">
+
+
+
+    </head>
+    <body>
+    <div id="fh5co-page">
+        <a href="#" class="js-fh5co-nav-toggle fh5co-nav-toggle"><i></i></a>
+        <aside id="fh5co-aside" role="complementary" class="border js-fullheight">
+
+            <nav class="fh5co-main-menu" role="navigation">
+            </nav>
+            <div class="clearfix"></div>
+            <h1  id="fh5co-logo">
+                <a href="https://aaron-j-olson.com/index.html">
+                    <img src="\images\olson.JPG" />
+                </a>
+            </h1>
+            <nav class="fh5co-main-menu" role="navigation">
+<ul>
+    <!-- home link -->
+    <li><a href="https://aaron-j-olson.com/">Home</a></li>
+
+    <!-- page links -->
+            <li><a href="https://aaron-j-olson.com/pages/home.html">About Me</a></li>
+
+    <!-- categories -->
+        <li><a href="https://aaron-j-olson.com/categories.html">Categories</a></li>
+
+    <!-- tags -->
+        <li><a href="https://aaron-j-olson.com/tags.html">Tags</a></li>
+
+    <!-- additional menu items from config -->
+        <!-- <li class="nav-title">Misc</li> -->
+            <li><a href="https://aaron-j-olson.com/archives.html">Archive</a></li>
+            <li><a href="https://aaron-j-olson.com/contact.html">Contact</a></li>
+
+</ul>
+            </nav>
+
+<ul id="social">
+            <li><a href="https://github.com/ajolson89" alt="Github"><i class="icon-github"></i></a></li>
+
+            <li><a href="https://www.linkedin.com/in/aaron-j-olson/" alt="LinkedIn"><i class="icon-linkedin2"></i></a></li>
+
+</ul>
+        </aside>
+
+        <div id="fh5co-main">
+
+    <div class="fh5co-narrow-content article-content">
+        <h1 class="fh5co-heading-colored">Time Series Analysis - Driving Records 25 year history United States</h1>
+
+        <div>by
+                <a href="author/himal-suthar-xt-nguyen-aaron-olson.html">Himal Suthar, XT Nguyen, Aaron Olson</a> - Thu 08 March 2018
+        </div>
+
+            <div><span>Tags: </span>
+                    <span><a href="https://aaron-j-olson.com/tag/python.html">#python</a> </span>
+                    <span><a href="https://aaron-j-olson.com/tag/gradient-boost.html">#gradient boost</a> </span>
+                    <span><a href="https://aaron-j-olson.com/tag/decision-tree.html">#decision tree</a> </span>
+                    <span><a href="https://aaron-j-olson.com/tag/spark.html">#spark</a> </span>
+                    <span><a href="https://aaron-j-olson.com/tag/pyspark.html">#pyspark</a> </span>
+            </div>
+
+        <div class="animate-box" data-animate-effect="fadeInLeft">
+            <p class="animate-box" data-animate-effect="fadeInLeft"><h1>Description of the Lab</h1>
+<p>In this lab, you are asked to answer the question <strong>"Do changes in traffic laws affect traffic fatalities?"</strong>  To do so, you will conduct the tasks specified below using the data set <em>driving.Rdata</em>, which includes 25 years of data that cover changes in various state drunk driving, seat belt, and speed limit laws. </p>
+<p>Specifically, this data set contains data for the 48 continental U.S. states from 1980 through 2004. Various driving laws are indicated in the data set, such as the alcohol level at which drivers are considered legally intoxicated. There are also indicators for per se laws - where licenses can be revoked without a trial - and seat belt laws. A few economics and demographic variables are also included. The description of the each of the variables in the dataset is come with the dataste.</p>
+<p><strong>Exercises:</strong></p>
+<h1>Question 1</h1>
+<ol>
+<li>Load the data. Provide a description of the basic structure of the dataset, as we have done throughout the semester. Conduct a very thorough EDA, which should include both graphical and tabular techniques, on the dataset, including both the dependent variable <em>totfatrte</em> and the potential explanatory variables. You need to write a detailed narrative of your observations of your EDA. <em>Reminder: giving an "output dump" (i.e. providing a bunch of graphs and tables without description and hoping your audience will interpret them) will receive a zero in this exercise.</em></li>
+</ol>
+<p>```{r echo = FALSE}
+library(ggplot2)
+library(dplyr)
+library(mcprofile)
+library(car)
+library(Hmisc)
+library(ggcorrplot)
+library(plm)
+library(GGally)
+library(EnvStats)</p>
+<p>load("driving.RData")
+df &lt;- data
+head(df)</p>
+<h1>describe(df)</h1>
+<h1>table(df$year, df$state)</h1>
+<div class="highlight"><pre><span></span><span class="n">During</span> <span class="n">our</span> <span class="n">analysis</span> <span class="n">we</span> <span class="n">utilized</span> <span class="n">the</span> <span class="err">$</span><span class="k">describe</span><span class="err">$</span> <span class="k">function</span> <span class="k">in</span> <span class="k">order</span> <span class="k">to</span> <span class="n">print</span> <span class="k">out</span> <span class="k">table</span> <span class="k">statistics</span> <span class="k">by</span> <span class="k">variable</span> <span class="k">in</span> <span class="n">the</span> <span class="n">dataset</span><span class="p">.</span> <span class="n">Due</span> <span class="k">to</span> <span class="n">the</span> <span class="k">length</span><span class="p">,</span> <span class="n">we</span> <span class="n">have</span> <span class="n">excluded</span> <span class="n">that</span> <span class="n">print</span> <span class="k">out</span> <span class="n">here</span><span class="p">.</span> 
+
+<span class="n">Within</span> <span class="n">the</span> <span class="n">dataset</span><span class="p">,</span> <span class="n">we</span> <span class="n">note</span> <span class="n">that</span> <span class="n">there</span> <span class="k">are</span> <span class="mi">51</span> <span class="n">states</span> <span class="p">(</span><span class="mi">50</span> <span class="n">states</span> <span class="n">plus</span> <span class="n">the</span> <span class="n">district</span> <span class="k">of</span> <span class="n">columbia</span><span class="p">)</span> <span class="k">with</span> <span class="n">panel</span> <span class="k">data</span> <span class="n">collected</span> <span class="k">from</span> <span class="mi">1980</span> <span class="k">to</span> <span class="mi">2004</span><span class="p">.</span> <span class="n">There</span> <span class="k">are</span> <span class="k">no</span> <span class="n">missing</span> <span class="n">variables</span><span class="p">,</span> <span class="k">and</span> <span class="k">using</span> <span class="n">the</span> <span class="k">table</span> <span class="n">functino</span><span class="p">,</span> <span class="n">we</span> <span class="n">can</span> <span class="n">see</span> <span class="n">that</span> <span class="n">the</span> <span class="n">dataset</span> <span class="k">is</span> <span class="n">structured</span> <span class="k">by</span> <span class="k">state</span> <span class="k">and</span> <span class="k">by</span> <span class="k">year</span><span class="p">,</span> <span class="k">with</span> <span class="n">a</span> <span class="n">single</span> <span class="k">row</span> <span class="k">for</span> <span class="k">each</span> <span class="k">state</span><span class="o">-</span><span class="k">year</span> <span class="n">combination</span><span class="p">.</span> 
+
+<span class="o">##</span> <span class="k">Variable</span> <span class="n">Transformations</span> <span class="k">and</span> <span class="n">EDA</span>
+<span class="o">```</span><span class="err">{</span><span class="n">r</span><span class="err">}</span>
+<span class="k">table</span><span class="p">(</span><span class="n">df$sl75</span><span class="p">)</span>
+</pre></div>
+
+
+<p>There are also several variables, such as sl75, bac_08, that are primarily binary (0 or 1) but also have some values indicating partial year truths. Analyzing these variables, most values are either 0 or 1 with only a handful (out of the entire dataset) being between 0 or 1. For this analysis we have chosen to assign values less than 0.5 to 0/False and values greater than or equal to 0.5 to 1/True. </p>
+<div class="highlight"><pre><span></span><span class="c1">#Make Variables binary and transform other variables</span>
+<span class="n">df</span><span class="o">$</span><span class="n">bac_binary</span><span class="p">[</span><span class="n">df</span><span class="o">$</span><span class="n">bac08</span> <span class="o">&lt;</span> <span class="m">0.5</span> <span class="o">|</span> <span class="n">df</span><span class="o">$</span><span class="n">bac10</span> <span class="o">&lt;=</span> <span class="m">0.5</span><span class="p">]</span> <span class="o">&lt;-</span> <span class="m">0</span>
+<span class="n">df</span><span class="o">$</span><span class="n">bac_binary</span><span class="p">[</span><span class="n">df</span><span class="o">$</span><span class="n">bac08</span> <span class="o">&gt;=</span> <span class="m">0.5</span> <span class="o">|</span> <span class="n">df</span><span class="o">$</span><span class="n">bac10</span> <span class="o">&gt;</span> <span class="m">0.5</span><span class="p">]</span> <span class="o">&lt;-</span> <span class="m">1</span>
+
+<span class="c1">#Create speed variable with the intent of creating one variable denoting speed limit</span>
+<span class="n">df</span><span class="o">$</span><span class="n">speed</span><span class="p">[</span><span class="n">df</span><span class="o">$</span><span class="n">sl55</span> <span class="o">&gt;=</span><span class="m">0.5</span><span class="p">]</span> <span class="o">&lt;-</span> <span class="m">55</span>
+<span class="n">df</span><span class="o">$</span><span class="n">speed</span><span class="p">[</span><span class="n">df</span><span class="o">$</span><span class="n">sl65</span> <span class="o">&gt;=</span><span class="m">0.5</span><span class="p">]</span> <span class="o">&lt;-</span> <span class="m">65</span>
+<span class="n">df</span><span class="o">$</span><span class="n">speed</span><span class="p">[</span><span class="n">df</span><span class="o">$</span><span class="n">sl70</span> <span class="o">&gt;=</span><span class="m">0.5</span><span class="p">]</span> <span class="o">&lt;-</span> <span class="m">70</span>
+<span class="n">df</span><span class="o">$</span><span class="n">speed</span><span class="p">[</span><span class="n">df</span><span class="o">$</span><span class="n">sl75</span> <span class="o">&gt;=</span><span class="m">0.5</span><span class="p">]</span> <span class="o">&lt;-</span> <span class="m">75</span>
+<span class="n">df</span><span class="o">$</span><span class="n">speed</span><span class="p">[</span><span class="n">df</span><span class="o">$</span><span class="n">sl70plus</span> <span class="o">==</span> <span class="m">1</span><span class="p">]</span> <span class="o">&lt;-</span> <span class="m">80</span>
+
+<span class="c1">#Continue to make variables binary</span>
+<span class="n">df</span><span class="o">$</span><span class="n">sl55_binary</span> <span class="o">&lt;-</span> <span class="nf">ifelse</span><span class="p">(</span><span class="n">df</span><span class="o">$</span><span class="n">sl55</span> <span class="o">&gt;=</span> <span class="m">0.5</span><span class="p">,</span> <span class="m">1</span><span class="p">,</span> <span class="m">0</span><span class="p">)</span>
+<span class="n">df</span><span class="o">$</span><span class="n">sl65_binary</span> <span class="o">&lt;-</span> <span class="nf">ifelse</span><span class="p">(</span><span class="n">df</span><span class="o">$</span><span class="n">sl65</span> <span class="o">&gt;=</span> <span class="m">0.5</span><span class="p">,</span> <span class="m">1</span><span class="p">,</span> <span class="m">0</span><span class="p">)</span>
+<span class="n">df</span><span class="o">$</span><span class="n">sl70_binary</span> <span class="o">&lt;-</span> <span class="nf">ifelse</span><span class="p">(</span><span class="n">df</span><span class="o">$</span><span class="n">sl70</span> <span class="o">&gt;=</span> <span class="m">0.5</span><span class="p">,</span> <span class="m">1</span><span class="p">,</span> <span class="m">0</span><span class="p">)</span>
+<span class="n">df</span><span class="o">$</span><span class="n">sl75_binary</span> <span class="o">&lt;-</span> <span class="nf">ifelse</span><span class="p">(</span><span class="n">df</span><span class="o">$</span><span class="n">sl75</span> <span class="o">&gt;=</span> <span class="m">0.5</span><span class="p">,</span> <span class="m">1</span><span class="p">,</span> <span class="m">0</span><span class="p">)</span>
+<span class="n">df</span><span class="o">$</span><span class="n">sl70plus_binary</span> <span class="o">&lt;-</span> <span class="nf">ifelse</span><span class="p">(</span><span class="n">df</span><span class="o">$</span><span class="n">sl70plus</span> <span class="o">&gt;=</span> <span class="m">0.5</span><span class="p">,</span> <span class="m">1</span><span class="p">,</span> <span class="m">0</span><span class="p">)</span>
+<span class="n">df</span><span class="o">$</span><span class="n">bac08_binary</span> <span class="o">&lt;-</span> <span class="nf">ifelse</span><span class="p">(</span><span class="n">df</span><span class="o">$</span><span class="n">bac08</span> <span class="o">&gt;=</span> <span class="m">0.5</span><span class="p">,</span> <span class="m">1</span><span class="p">,</span> <span class="m">0</span><span class="p">)</span>
+<span class="n">df</span><span class="o">$</span><span class="n">bac10_binary</span> <span class="o">&lt;-</span> <span class="nf">ifelse</span><span class="p">(</span><span class="n">df</span><span class="o">$</span><span class="n">bac10</span> <span class="o">&gt;=</span> <span class="m">0.5</span><span class="p">,</span> <span class="m">1</span><span class="p">,</span> <span class="m">0</span><span class="p">)</span>
+<span class="n">df</span><span class="o">$</span><span class="n">gdl_binary</span> <span class="o">&lt;-</span> <span class="nf">ifelse</span><span class="p">(</span><span class="n">df</span><span class="o">$</span><span class="n">gdl</span> <span class="o">&gt;=</span> <span class="m">0.5</span><span class="p">,</span> <span class="m">1</span><span class="p">,</span> <span class="m">0</span><span class="p">)</span>
+<span class="n">df</span><span class="o">$</span><span class="n">zerotol_binary</span> <span class="o">&lt;-</span> <span class="nf">ifelse</span><span class="p">(</span><span class="n">df</span><span class="o">$</span><span class="n">zerotol</span> <span class="o">&gt;=</span> <span class="m">0.5</span><span class="p">,</span> <span class="m">1</span><span class="p">,</span> <span class="m">0</span><span class="p">)</span>
+<span class="n">df</span><span class="o">$</span><span class="n">perse_binary</span> <span class="o">&lt;-</span> <span class="nf">ifelse</span><span class="p">(</span><span class="n">df</span><span class="o">$</span><span class="n">perse</span> <span class="o">&gt;=</span> <span class="m">0.5</span><span class="p">,</span> <span class="m">1</span><span class="p">,</span> <span class="m">0</span><span class="p">)</span>
+<span class="n">df</span><span class="o">$</span><span class="n">seatbelt_binary</span> <span class="o">&lt;-</span> <span class="nf">ifelse</span><span class="p">(</span><span class="n">df</span><span class="o">$</span><span class="n">seatbelt</span> <span class="o">&gt;=</span> <span class="m">0.5</span><span class="p">,</span> <span class="m">1</span><span class="p">,</span> <span class="m">0</span><span class="p">)</span>
+</pre></div>
+
+
+<p>After transforming the variables, we begin the EDA analysis of the dataset. </p>
+<div class="highlight"><pre><span></span><span class="c1">#Histogram of totfatrte variable</span>
+<span class="nf">ggplot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="nf">aes</span><span class="p">(</span><span class="n">x</span> <span class="o">=</span> <span class="n">totfatrte</span><span class="p">))</span> <span class="o">+</span>
+  <span class="nf">geom_histogram</span><span class="p">()</span> <span class="o">+</span>
+  <span class="nf">ggtitle</span><span class="p">(</span><span class="s">&#39;Fatality Rate (Per 100,000 population) Histogram&#39;</span><span class="p">)</span> <span class="o">+</span>
+  <span class="nf">theme_bw</span><span class="p">()</span>
+
+<span class="nf">ggplot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="nf">aes</span><span class="p">(</span><span class="n">x</span> <span class="o">=</span> <span class="n">totfatrte</span><span class="p">,</span> <span class="n">fill</span> <span class="o">=</span> <span class="nf">as.factor</span><span class="p">(</span><span class="n">bac_binary</span><span class="p">)))</span> <span class="o">+</span>
+  <span class="nf">geom_histogram</span><span class="p">(</span><span class="n">alpha</span> <span class="o">=</span> <span class="m">0.7</span><span class="p">)</span> <span class="o">+</span>
+  <span class="nf">theme</span><span class="p">(</span><span class="n">legend.position</span> <span class="o">=</span> <span class="nf">c</span><span class="p">(</span><span class="m">0.9</span><span class="p">,</span> <span class="m">0.9</span><span class="p">))</span> <span class="o">+</span>
+  <span class="nf">theme_bw</span><span class="p">()</span> <span class="o">+</span>
+  <span class="nf">ggtitle</span><span class="p">(</span><span class="s">&#39;Fatality Rate Histogram by Presence of Blood Alcohol Limit (BAC) Laws&#39;</span><span class="p">)</span>
+
+<span class="nf">ggplot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="nf">aes</span><span class="p">(</span><span class="n">x</span> <span class="o">=</span> <span class="n">totfatrte</span><span class="p">,</span> <span class="n">fill</span> <span class="o">=</span> <span class="nf">as.factor</span><span class="p">(</span><span class="n">seatbelt</span><span class="p">)))</span> <span class="o">+</span>
+  <span class="nf">geom_histogram</span><span class="p">(</span><span class="n">alpha</span> <span class="o">=</span> <span class="m">0.7</span><span class="p">)</span> <span class="o">+</span>
+  <span class="nf">theme</span><span class="p">(</span><span class="n">legend.position</span> <span class="o">=</span> <span class="nf">c</span><span class="p">(</span><span class="m">0.9</span><span class="p">,</span> <span class="m">0.9</span><span class="p">))</span> <span class="o">+</span>
+  <span class="nf">theme_bw</span><span class="p">()</span> <span class="o">+</span>
+  <span class="nf">labs</span><span class="p">(</span><span class="n">title</span> <span class="o">=</span> <span class="s">&#39;Fatality Rate Histogram by Presence of Seatbelt laws&#39;</span><span class="p">,</span>
+       <span class="n">subtitle</span> <span class="o">=</span> <span class="s">&#39;=0 if none, =1 if primary, =2 if secondary&#39;</span><span class="p">)</span>
+</pre></div>
+
+
+<p>The histograms above show the distribution of the total fatalities per 100,000 people and shaded by the categories: whether the state had a seatbelt law in effect (0 for no law, 1 for front seat laws, 2 for back seat laws) and whether the state has a bac law in effect (0 for laws in place for up to half the year, 1 for if the law was in place for greater than half the year). All histogram distributions appear to give a similar shape across the different categories and have a long right tail.  This potentially indicates that there are limited differences accounting for changes in these two laws. </p>
+<p>In order to further our analysis we also looked at the distribution of miles driven, unemployment and perc14_24. From the histograms we can see that miles drive follows an approximate normal distribution with a long right tail. Unemployment has a long tail and would benefit from a log transformation in an effort to make the variable approximately normal. Perc14_24 does not appear to approximate a normal distribution and applying a log transformation only has limited effect - we chose to leave the variable as is for this analysis. </p>
+<p>We know that our panel dataset is organized by year and by state. We further our EDA below by exploring the dependent variable (totfatrte) amongst these two indexes. </p>
+<p>```{r warning = FALSE, fig.width=10, fig.height=4}
+ggplot(df, aes(as.factor(year), totfatrte)) +
+  geom_boxplot() +
+  geom_jitter(width = 0.2) +
+  theme_bw() +
+  ggtitle('Fatality Rates by Year')</p>
+<p>ggplot(df, aes(as.factor(state), totfatrte)) +
+  geom_boxplot() +
+  geom_jitter(width = 0.2) +
+  theme_bw() +
+  ggtitle('Fatality Rates by State')</p>
+<p>xyplot(totfatrte ~ year | state, data=df, as.table=T)</p>
+<div class="highlight"><pre><span></span><span class="n">The</span> <span class="n">bar</span> <span class="n">plot</span> <span class="n">across</span> <span class="n">years</span> <span class="n">shows</span> <span class="n">an</span> <span class="n">overall</span> <span class="k">general</span> <span class="n">decreasing</span> <span class="n">trend</span> <span class="k">until</span> <span class="n">approximately</span> <span class="mi">1992</span> <span class="k">where</span> <span class="n">total</span> <span class="n">fatalities</span> <span class="n">per</span> <span class="mi">100</span><span class="p">,</span><span class="mi">000</span> <span class="n">people</span> <span class="n">remains</span> <span class="n">approximately</span> <span class="n">constant</span><span class="p">.</span> <span class="n">Variance</span> <span class="k">is</span> <span class="k">not</span> <span class="n">constant</span> <span class="n">across</span> <span class="n">years</span> <span class="n">indicating</span> <span class="n">that</span> <span class="n">totfatrte</span> <span class="k">is</span> <span class="n">heterogeneous</span><span class="p">.</span> 
+
+<span class="k">In</span> <span class="n">the</span> <span class="n">total</span> <span class="n">fatalities</span> <span class="k">by</span> <span class="k">state</span> <span class="n">boxplot</span><span class="p">,</span> <span class="n">it</span> <span class="n">can</span> <span class="n">be</span> <span class="n">determined</span> <span class="n">that</span> <span class="k">each</span> <span class="k">state</span> <span class="n">has</span> <span class="n">a</span> <span class="k">unique</span> <span class="n">distribution</span> <span class="k">of</span> <span class="n">total</span> <span class="n">fatality</span> <span class="n">rates</span><span class="p">.</span> <span class="n">This</span> <span class="k">is</span> <span class="n">likely</span> <span class="n">due</span> <span class="k">to</span> <span class="n">a</span> <span class="nb">number</span> <span class="k">of</span> <span class="n">different</span> <span class="n">effects</span><span class="p">,</span> <span class="n">such</span> <span class="k">as</span> <span class="n">road</span> <span class="n">hazard</span> <span class="k">index</span><span class="p">,</span> <span class="n">population</span> <span class="n">driving</span> <span class="k">on</span> <span class="n">the</span> <span class="n">roadways</span><span class="p">,</span> <span class="n">incliment</span> <span class="n">weather</span><span class="p">,</span> <span class="n">etc</span><span class="p">.</span> <span class="n">The</span> <span class="n">purpose</span> <span class="k">of</span> <span class="n">our</span> <span class="n">analysis</span> <span class="k">and</span> <span class="n">model</span> <span class="n">will</span> <span class="n">be</span> <span class="k">to</span> <span class="n">determine</span> <span class="n">the</span> <span class="n">effectiveness</span> <span class="k">of</span> <span class="n">traffic</span> <span class="n">laws</span> <span class="k">on</span> <span class="n">the</span> <span class="n">total</span> <span class="n">fatality</span> <span class="n">rate</span><span class="p">.</span> 
+
+<span class="n">Total</span> <span class="n">fatalities</span> <span class="n">per</span> <span class="mi">100</span><span class="p">,</span><span class="mi">000</span> <span class="n">broken</span> <span class="n">up</span> <span class="k">by</span> <span class="k">state</span> <span class="k">and</span><span class="o">/</span><span class="k">or</span> <span class="k">year</span> <span class="n">indicates</span> <span class="n">that</span> <span class="n">there</span> <span class="k">is</span> <span class="nb">serial</span> <span class="n">correlation</span><span class="p">,</span> <span class="n">therefore</span> <span class="n">pooled</span> <span class="n">OLS</span> <span class="k">is</span> <span class="n">likely</span> <span class="n">a</span> <span class="n">poor</span> <span class="n">model</span> <span class="k">for</span> <span class="n">fit</span><span class="p">.</span> <span class="k">Instead</span> <span class="n">a</span> <span class="n">fixed</span> <span class="n">effect</span> <span class="n">model</span> <span class="k">is</span> <span class="n">a</span> <span class="n">good</span> <span class="n">candidate</span> <span class="k">to</span> <span class="k">analyze</span> <span class="n">this</span> <span class="n">dataset</span> <span class="k">and</span> <span class="n">problem</span><span class="p">.</span> 
+
+<span class="n">We</span> <span class="n">previously</span> <span class="n">analyzed</span> <span class="n">the</span> <span class="n">histogram</span> <span class="k">of</span> <span class="n">totfatrte</span> <span class="n">grouped</span> <span class="k">by</span> <span class="n">bac</span> <span class="k">and</span> <span class="n">seatbelt</span> <span class="n">traffic</span> <span class="n">laws</span><span class="p">.</span> <span class="n">Below</span> <span class="n">we</span> <span class="n">extend</span> <span class="n">this</span> <span class="n">analysis</span> <span class="k">by</span> <span class="n">observing</span> <span class="n">the</span> <span class="n">effect</span> <span class="k">of</span> <span class="n">these</span> <span class="n">laws</span> <span class="n">over</span> <span class="k">time</span><span class="p">.</span> 
+
+<span class="o">```</span><span class="err">{</span><span class="n">r</span> <span class="n">fig</span><span class="p">.</span><span class="n">width</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">fig</span><span class="p">.</span><span class="n">height</span><span class="o">=</span><span class="mi">4</span><span class="err">}</span>
+<span class="n">ggplot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">aes</span><span class="p">(</span><span class="k">as</span><span class="p">.</span><span class="n">factor</span><span class="p">(</span><span class="k">year</span><span class="p">),</span> <span class="n">totfatrte</span><span class="p">))</span> <span class="o">+</span>
+  <span class="n">geom_boxplot</span><span class="p">(</span><span class="n">aes</span><span class="p">(</span><span class="n">colour</span> <span class="o">=</span> <span class="k">as</span><span class="p">.</span><span class="n">factor</span><span class="p">(</span><span class="n">bac_binary</span><span class="p">)))</span> <span class="o">+</span>
+  <span class="n">theme_bw</span><span class="p">()</span> <span class="o">+</span>
+  <span class="n">ggtitle</span><span class="p">(</span><span class="ss">&quot;Fatalities by Year by Blood Alcohol Limit (BAC) Law Presence&quot;</span><span class="p">)</span> 
+
+<span class="n">ggplot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">aes</span><span class="p">(</span><span class="k">as</span><span class="p">.</span><span class="n">factor</span><span class="p">(</span><span class="k">year</span><span class="p">),</span> <span class="n">totfatrte</span><span class="p">))</span> <span class="o">+</span>
+  <span class="n">geom_boxplot</span><span class="p">(</span><span class="n">aes</span><span class="p">(</span><span class="n">colour</span> <span class="o">=</span> <span class="k">as</span><span class="p">.</span><span class="n">factor</span><span class="p">(</span><span class="n">seatbelt</span><span class="p">)))</span> <span class="o">+</span>
+  <span class="n">ggtitle</span><span class="p">(</span><span class="ss">&quot;Fatalities by Year by Seatbelt Law Presence&quot;</span><span class="p">)</span> <span class="o">+</span>
+  <span class="n">theme_bw</span><span class="p">()</span> <span class="o">+</span>
+  <span class="n">theme</span><span class="p">(</span><span class="n">legend</span><span class="p">.</span><span class="k">position</span> <span class="o">=</span> <span class="ss">&quot;bottom&quot;</span><span class="p">)</span>
+</pre></div>
+
+
+<p>Above are the barplots for totfatrte broken up by seatbelts and the bac_binary variable across time. Neither analysis shows strong effect of either variable based on the yearly dataset. We can see that there was an introduction and/or modification to both of these laws as time progressed. </p>
+<p>Our dependent variable totfatrte is defined as the total fatalities per 100,000 population. Intuitively we know that the risk associated with driving will increase the more a particular sample drives. It is therefore important to analyze how totfatrte varies with vehicmilesdriven. Furthermore we have generated a correlation plot matrix for all variables (except year indicators) to determine if there are correlations amongst other variables that have not yet been analyzed.  </p>
+<p>```{r fig.width=7, fig.height=7}
+ggcorrplot(cor(df[,-c(31:55)]), type = 'upper') +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+  ggtitle("Correlation plot for Driving Dataset")</p>
+<div class="highlight"><pre><span></span><span class="n">The</span> <span class="n">overall</span> <span class="n">correlation</span> <span class="n">plot</span> <span class="n">does</span> <span class="k">not</span> <span class="k">show</span> <span class="k">any</span> <span class="n">surprising</span> <span class="n">correlations</span> <span class="n">that</span> <span class="n">have</span> <span class="k">not</span> <span class="n">previously</span> <span class="n">been</span> <span class="n">discussed</span><span class="p">.</span> <span class="n">Certain</span> <span class="n">law</span> <span class="n">variables</span> <span class="k">are</span> <span class="n">correlated</span> <span class="k">with</span> <span class="n">the</span> <span class="k">year</span> <span class="n">indicating</span> <span class="n">that</span> <span class="n">the</span> <span class="n">law</span> <span class="n">has</span> <span class="n">changed</span> <span class="n">over</span> <span class="n">the</span> <span class="n">years</span> <span class="n">analyzed</span> <span class="k">in</span> <span class="n">the</span> <span class="n">dataset</span><span class="p">.</span> 
+
+<span class="n">Let</span><span class="s1">&#39;s now take a look a correlation matrix of the variables perc14_24, unem and vehicmilespc with totfatrte.  </span>
+
+<span class="s1">```{r}</span>
+<span class="s1">ggpairs(df[, c(&#39;</span><span class="n">totfatrte</span><span class="s1">&#39;, &#39;</span><span class="n">perc14_24</span><span class="s1">&#39;, &#39;</span><span class="n">unem</span><span class="s1">&#39;, &#39;</span><span class="n">vehicmilespc</span><span class="err">&#39;</span><span class="p">)])</span>
+</pre></div>
+
+
+<p>There seems to be a slight correlation between both totfatrte and perc14_24, unem and vehicmilesp, with the strongest correlation with perc14_24. From the histogram distribution we can see a slight skew in the unem histogram - which can be corrected via a log transformation. Alternatively we see a significantly different range in values between vehicmilespc and all other variables. Therefore it is recommended to apply a normalization or scaling term. We will do this prior to fitting a model with this parameter to normalize the variable between 0-100.  </p>
+<p>Let's also take a look at these values by year and state to check for heterogeneity across both dimensions.  </p>
+<div class="highlight"><pre><span></span><span class="c1"># Conditional Box-plot</span>
+<span class="n">conditional_plot</span> <span class="o">=</span> <span class="nf">function</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">plotvar</span><span class="p">,</span> <span class="n">condvar</span><span class="p">,</span> <span class="n">title</span><span class="p">)</span> <span class="p">{</span>
+  <span class="n">g</span> <span class="o">&lt;-</span> <span class="nf">ggplot</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="nf">aes</span><span class="p">(</span><span class="nf">as.factor</span><span class="p">(</span><span class="n">condvar</span><span class="p">),</span> <span class="n">plotvar</span><span class="p">))</span> 
+  <span class="n">g</span> <span class="o">+</span>
+    <span class="nf">geom_boxplot</span><span class="p">()</span> <span class="o">+</span>
+    <span class="nf">geom_jitter</span><span class="p">(</span><span class="n">width</span> <span class="o">=</span> <span class="m">0.2</span><span class="p">,</span> <span class="n">size</span> <span class="o">=</span> <span class="m">0.1</span><span class="p">)</span> <span class="o">+</span>
+    <span class="nf">ggtitle</span><span class="p">(</span><span class="n">title</span><span class="p">)</span> <span class="o">+</span>
+    <span class="nf">theme_bw</span><span class="p">()</span>
+<span class="p">}</span>
+
+<span class="c1"># perc14_24 by year </span>
+<span class="nf">conditional_plot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">df</span><span class="o">$</span><span class="n">perc14_24</span><span class="p">,</span> <span class="n">df</span><span class="o">$</span><span class="n">year</span><span class="p">,</span> <span class="s">&quot;perc14_24 by year&quot;</span><span class="p">)</span>
+
+<span class="c1"># perc14_24 by state</span>
+<span class="nf">conditional_plot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">df</span><span class="o">$</span><span class="n">perc14_24</span><span class="p">,</span> <span class="n">df</span><span class="o">$</span><span class="n">state</span><span class="p">,</span> <span class="s">&quot;perc14_24 by state&quot;</span><span class="p">)</span>
+
+<span class="c1"># unem by year </span>
+<span class="nf">conditional_plot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">df</span><span class="o">$</span><span class="n">unem</span><span class="p">,</span> <span class="n">df</span><span class="o">$</span><span class="n">year</span><span class="p">,</span> <span class="s">&quot;unem by year&quot;</span><span class="p">)</span>
+
+<span class="c1"># unem by state</span>
+<span class="nf">conditional_plot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">df</span><span class="o">$</span><span class="n">unem</span><span class="p">,</span> <span class="n">df</span><span class="o">$</span><span class="n">state</span><span class="p">,</span> <span class="s">&quot;unem by state&quot;</span><span class="p">)</span>
+
+<span class="c1"># vehicmilespc by year </span>
+<span class="nf">conditional_plot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">df</span><span class="o">$</span><span class="n">vehicmilespc</span><span class="p">,</span> <span class="n">df</span><span class="o">$</span><span class="n">year</span><span class="p">,</span> <span class="s">&quot;vehicmilespc by year&quot;</span><span class="p">)</span>
+</pre></div>
+
+
+<p>As seen in the charts above, there appears to be a definitive negative trend in perc14_24 with time, and a slight negative trend in unem with time, with a slight cyclical pattern. Additionally, vehicmilespc increases over time, which could be a function of increasing overall population or another reason. The variance in vehicmilespc also appears to increase with time. There does not appear to be any heterogeneity in the two variables by state but does appear to be heterogeneity by year.</p>
+<p>From our EDA we have determined that unemployment, perc14_24 and vehicmilespc are likely significant variables in the prediction of total fatality rate. Miles driven is another.</p>
+<h1>Question 2.</h1>
+<h2>2.1 How is the our dependent variable of interest <em>totfatrte</em> defined?</h2>
+<p>From the dataset website, totfatrte = total fatalities per 100,000 population. It should be noted that presumably population doesn't necessarily mean drivers (as such it may not precisely represent the number of persons that are on the roadways).</p>
+<h2>2.2. What is the average of this variable in each of the years in the time period covered in this dataset?</h2>
+<div class="highlight"><pre><span></span><span class="n">avg_year</span> <span class="o">&lt;-</span> <span class="n">df</span> <span class="o">%&gt;%</span> <span class="nf">group_by</span><span class="p">(</span><span class="n">year</span><span class="p">)</span> <span class="o">%&gt;%</span> <span class="nf">summarise</span><span class="p">(</span><span class="n">avg_rate</span> <span class="o">=</span> <span class="nf">mean</span><span class="p">(</span><span class="n">totfatrte</span><span class="p">,</span> <span class="n">na.rm</span> <span class="o">=</span> <span class="bp">T</span><span class="p">))</span>
+
+<span class="n">avg_year</span>
+
+<span class="nf">ggplot</span><span class="p">()</span> <span class="o">+</span>
+  <span class="nf">geom_point</span><span class="p">(</span><span class="n">data</span> <span class="o">=</span> <span class="n">avg_year</span><span class="p">,</span> <span class="nf">aes</span><span class="p">(</span><span class="n">x</span> <span class="o">=</span> <span class="n">year</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">avg_rate</span><span class="p">),</span> <span class="n">stat</span> <span class="o">=</span> <span class="s">&#39;identity&#39;</span><span class="p">)</span> <span class="o">+</span> 
+  <span class="nf">ggtitle</span><span class="p">(</span><span class="s">&#39;Average totfatrte per Year&#39;</span><span class="p">)</span>
+</pre></div>
+
+
+<p>In the plot above we can generally see a decreasing trend until the year 1992 when totfatrte is approximately constant. Below we will fit a linear model using year dummy variables as the explanatory variables. It is expected to see an overall decrease in totfatrte across the years.</p>
+<h2>2.3 Estimate a linear regression model of <em>totfatrte</em> on a set of dummy variables for the years 1981 through 2004.</h2>
+<div class="highlight"><pre><span></span><span class="n">fit.year</span> <span class="o">&lt;-</span> <span class="nf">lm</span><span class="p">(</span><span class="n">totfatrte</span> <span class="o">~</span>  <span class="n">d80</span> <span class="o">+</span> <span class="n">d81</span> <span class="o">+</span> <span class="n">d82</span> <span class="o">+</span> <span class="n">d83</span> <span class="o">+</span> <span class="n">d84</span> <span class="o">+</span> <span class="n">d85</span> <span class="o">+</span> <span class="n">d86</span> <span class="o">+</span> <span class="n">d87</span> <span class="o">+</span> <span class="n">d88</span> <span class="o">+</span> <span class="n">d89</span> <span class="o">+</span> <span class="n">d90</span> <span class="o">+</span> 
+     <span class="n">d91</span> <span class="o">+</span> <span class="n">d92</span> <span class="o">+</span> <span class="n">d93</span> <span class="o">+</span> <span class="n">d94</span> <span class="o">+</span> <span class="n">d95</span> <span class="o">+</span> <span class="n">d96</span> <span class="o">+</span> <span class="n">d97</span> <span class="o">+</span> <span class="n">d98</span> <span class="o">+</span> <span class="n">d99</span> <span class="o">+</span> <span class="n">d00</span> <span class="o">+</span> <span class="n">d01</span> <span class="o">+</span> <span class="n">d02</span> <span class="o">+</span> <span class="n">d03</span><span class="p">,</span> <span class="n">data</span> <span class="o">=</span> <span class="n">df</span><span class="p">)</span>
+<span class="nf">summary</span><span class="p">(</span><span class="n">fit.year</span><span class="p">)</span>
+</pre></div>
+
+
+<h2>2.4 What does this model explain? Describe what you find in this model.</h2>
+<p>The model explains how fatality rate changes on average cross states compared to the base year of 2004. For example, the coefficient for <em>d88</em> is 4.16271, which means that on average, total fatality rate was 4.16 greater in 1998 (20.89) compared to 2004 (16.72), which is exactly waht reported on the average fatality rate by year above.</p>
+<h2>2.5 Did driving become safer over this period? Please provide a detailed explanation.</h2>
+<p>From the estimated coefficients alone that are all positive, we can say that, compared to the based year of 2004, the previous years had higher fatality rate.</p>
+<p>From the wilcox test statistics and the estimated parameters we can see a statistically significant effect in the years 1980 through 1991. However from 1992 onwards there is insufficient difference to detect a statistically significant change in the total fatality rate.</p>
+<p>Therefore, we would say that driving became safer in the years 1980s though 1991, but there is insufficient evidence to conclude that for the years after 1991 through 2004.</p>
+<h1>Question 3</h1>
+<h2>3.1 Expand your model in <em>Exercise 2</em> by adding variables <em>bac08, bac10, perse, sbprim, sbsecon, sl70plus, gdl, perc14_24, unem, vehicmilespc</em>, and perhaps <em>transformations of some or all of these variables</em>.</h2>
+<div class="highlight"><pre><span></span><span class="c1"># Apply transformations as previously discussed in the EDA section</span>
+<span class="n">df</span><span class="o">$</span><span class="n">log_unem</span> <span class="o">=</span> <span class="nf">log</span><span class="p">(</span><span class="n">df</span><span class="o">$</span><span class="n">unem</span><span class="p">)</span>
+<span class="n">df</span><span class="o">$</span><span class="n">norm_vehicmilespc</span> <span class="o">&lt;-</span> <span class="nf">as.data.frame</span><span class="p">(</span><span class="nf">apply</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="m">2</span><span class="p">,</span> <span class="nf">function</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="p">(</span><span class="m">100</span> <span class="o">*</span> <span class="n">x</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="nf">max</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">-</span><span class="nf">min</span><span class="p">(</span><span class="n">x</span><span class="p">))))</span><span class="o">$</span><span class="n">vehicmilespc</span>
+
+<span class="c1"># Fit model</span>
+<span class="n">fit.multi</span> <span class="o">&lt;-</span> <span class="nf">lm</span><span class="p">(</span><span class="n">totfatrte</span> <span class="o">~</span>  <span class="n">d80</span> <span class="o">+</span> <span class="n">d81</span> <span class="o">+</span> <span class="n">d82</span> <span class="o">+</span> <span class="n">d83</span> <span class="o">+</span> <span class="n">d84</span> <span class="o">+</span> <span class="n">d85</span> <span class="o">+</span> <span class="n">d86</span> <span class="o">+</span> <span class="n">d87</span> <span class="o">+</span> <span class="n">d88</span> <span class="o">+</span> <span class="n">d89</span> <span class="o">+</span> <span class="n">d90</span> <span class="o">+</span> 
+     <span class="n">d91</span> <span class="o">+</span> <span class="n">d92</span> <span class="o">+</span> <span class="n">d93</span> <span class="o">+</span> <span class="n">d94</span> <span class="o">+</span> <span class="n">d95</span> <span class="o">+</span> <span class="n">d96</span> <span class="o">+</span> <span class="n">d97</span> <span class="o">+</span> <span class="n">d98</span> <span class="o">+</span> <span class="n">d99</span> <span class="o">+</span> <span class="n">d00</span> <span class="o">+</span> <span class="n">d01</span> <span class="o">+</span> <span class="n">d02</span> <span class="o">+</span> <span class="n">d03</span> <span class="o">+</span> <span class="n">bac10_binary</span> <span class="o">+</span> 
+       <span class="n">bac08_binary</span> <span class="o">+</span> <span class="n">perse_binary</span> <span class="o">+</span> <span class="n">sbprim</span> <span class="o">+</span> <span class="n">sbsecon</span> <span class="o">+</span> <span class="n">sl70plus_binary</span> <span class="o">+</span> <span class="n">gdl_binary</span> <span class="o">+</span> <span class="n">perc14_24</span> <span class="o">+</span> <span class="n">log_unem</span> <span class="o">+</span> 
+       <span class="n">norm_vehicmilespc</span><span class="p">,</span> <span class="n">data</span> <span class="o">=</span> <span class="n">df</span><span class="p">)</span>
+<span class="nf">summary</span><span class="p">(</span><span class="n">fit.multi</span><span class="p">)</span>
+</pre></div>
+
+
+<h2>3.2 Please explain carefully your rationale, which should be based on your EDA, behind any transformation you made. If no transformation is made, explain why transformation is not needed.</h2>
+<p>For this model we are using binarized versions of the variables bac10, bac08, perse, sl70plus, and gdl, as there is only a small proportion of the dataset that has values between 0 and 1 for these variables. We have also explained the rationale in more detail in the Transformation and EDA section above.</p>
+<p>We decided to use a log transformation on the unem variable because the histogram indicated that a log transformation would make the distribution amongst unemployment numbers approximately normal. </p>
+<p>We kept the variables sbprim and sbsecon as is since they only take on values 0 and 1.  </p>
+<p>We kept the variable perc14_24 as is since it is can be treated as a continuous variable for this model.  </p>
+<p>For the vehicmilespc variable, the range associated with this variable is quite large in comparison to the range amongst all other variables (ignoring vehicmiles) as well as our dependent variable. We therefore applied a normalization step to make the range for this variable between 0 and 100. This does complicate interpretation based on the coefficient. From analysis, the minimum and maximum values for this category repectively are: </p>
+<div class="highlight"><pre><span></span><span class="nf">print</span><span class="p">(</span><span class="nf">min</span><span class="p">(</span><span class="n">df</span><span class="o">$</span><span class="n">vehicmilespc</span><span class="p">))</span>
+<span class="nf">print</span><span class="p">(</span><span class="nf">max</span><span class="p">(</span><span class="n">df</span><span class="o">$</span><span class="n">vehicmilespc</span><span class="p">))</span>
+</pre></div>
+
+
+<p>From our model summary, the coefficient for norm_vehicmilespc is 0.41121, therefore if there was a 1,000 mile increase we would estimate a $\Delta totfatrte = 0.41121 \frac{100000}{18390 - 4372} = 2.933$ increase in totfatrte variable. </p>
+<h2>3.3 How are the variables <em>bac8</em> and <em>bac10</em> defined? Interpret the coefficients on <em>bac8</em> and <em>bac10</em>.</h2>
+<p>The bac8 and bac10 variables indicate whether the state had a BAC limit of 0.8 and 0.10, respectively, during that year.  </p>
+<p>The coefficients on bac10_biary and bac08_binary are -1.131 (SE .3608) and -2.207 (SE .4890), respectively.  This means that the presence of a BAC .10 limit decreased fatality rates by -1.131 and the presence of a BAC .08 limit decreased fatality rates by -2.208. Intuitively, this makes sense because the lower the blood alcohol limit is, the stricter the traffic laws, hence lowering fatality rates by a larger amount.</p>
+<h2>3.4 Do <em>per se laws</em> have a negative effect on the fatality rate?</h2>
+<p>The perse laws is only slightly statistically significant effect (at the 0.05 level) on totfatrte. Its coefficient of -0.5396e indicates that in general it had an increase effect on total fatality rate.</p>
+<h2>3.5 What about having a primary seat belt law? (Note that if a law was enacted sometime within a year the fraction of the year is recorded in place of the zero-one indicator.)</h2>
+<p>The primary seatbelt law (<em>sbprim</em>) did not have a statistically significant effect (even at 0.1 level) on <em>totfatrte</em>. Its coefficient of -0.3530 indicates that in general it had an negative effect on total fatality rate. Intuitively, this makes sense but this effect is not statistically significant. </p>
+<h1>Question 4</h1>
+<h2>4.1 Reestimate the model from <em>Exercise 3</em> using a fixed effects (at the state level) model.</h2>
+<div class="highlight"><pre><span></span><span class="n">model.fe2</span> <span class="o">&lt;-</span><span class="nf">plm</span><span class="p">(</span><span class="n">totfatrte</span> <span class="o">~</span>  <span class="n">d80</span> <span class="o">+</span> <span class="n">d81</span> <span class="o">+</span> <span class="n">d82</span> <span class="o">+</span> <span class="n">d83</span> <span class="o">+</span> <span class="n">d84</span> <span class="o">+</span> <span class="n">d85</span> <span class="o">+</span> <span class="n">d86</span> <span class="o">+</span> <span class="n">d87</span> <span class="o">+</span> <span class="n">d88</span> <span class="o">+</span> <span class="n">d89</span> <span class="o">+</span> <span class="n">d90</span> <span class="o">+</span> 
+                  <span class="n">d91</span> <span class="o">+</span> <span class="n">d92</span> <span class="o">+</span> <span class="n">d93</span> <span class="o">+</span> <span class="n">d94</span> <span class="o">+</span> <span class="n">d95</span> <span class="o">+</span> <span class="n">d96</span> <span class="o">+</span> <span class="n">d97</span> <span class="o">+</span> <span class="n">d98</span> <span class="o">+</span> <span class="n">d99</span> <span class="o">+</span> <span class="n">d00</span> <span class="o">+</span> <span class="n">d01</span> <span class="o">+</span> <span class="n">d02</span> <span class="o">+</span> <span class="n">d03</span> <span class="o">+</span> 
+                  <span class="n">bac10_binary</span> <span class="o">+</span> <span class="n">bac08_binary</span> <span class="o">+</span> <span class="n">perse_binary</span> <span class="o">+</span> <span class="n">sbprim</span> <span class="o">+</span> <span class="n">sbsecon</span> <span class="o">+</span> <span class="n">sl70plus_binary</span> <span class="o">+</span>
+                  <span class="n">gdl_binary</span> <span class="o">+</span> <span class="n">perc14_24</span> <span class="o">+</span> <span class="n">log_unem</span> <span class="o">+</span> <span class="n">norm_vehicmilespc</span><span class="p">,</span>
+                <span class="n">data</span> <span class="o">=</span> <span class="n">df</span><span class="p">,</span>
+                <span class="n">index</span><span class="o">=</span><span class="nf">c</span><span class="p">(</span><span class="s">&quot;state&quot;</span><span class="p">,</span> <span class="s">&quot;year&quot;</span><span class="p">),</span>
+                <span class="n">model</span><span class="o">=</span><span class="s">&quot;within&quot;</span><span class="p">)</span>
+
+<span class="nf">summary</span><span class="p">(</span><span class="n">model.fe2</span><span class="p">)</span>
+<span class="nf">pbgtest</span><span class="p">(</span><span class="n">model.fe2</span><span class="p">)</span>
+</pre></div>
+
+
+<h2>4.2 How do the coefficients on <em>bac08, bac10, perse, and sbprim</em> compare with the pooled OLS estimates?</h2>
+<p>The coefficients on <em>bac08, bac10</em> are statistically significant in both pooled OLS and FE models, but less strongly significant in the FE model. Also, the effect estimate of blood alcohol limit law is less than half of that in the pooled OLS model.</p>
+<p>The coefficients on <em>perse, and sbprim</em> are either weakly statistically significant or not significant at all in the pooled OLS model but they are both strongly statistically in the fixed effects (at the state level), although the effect estimates are much lower in the FE model.</p>
+<h2>4.3 Which set of estimates do you think is more reliable?</h2>
+<p>The FE model should be more reliable than the pooled OLS model. The reason is the FE model takes into account the variation over time and by states.</p>
+<div class="highlight"><pre><span></span><span class="nf">ggplot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="nf">aes</span><span class="p">(</span><span class="nf">as.factor</span><span class="p">(</span><span class="n">year</span><span class="p">),</span> <span class="n">model.fe2</span><span class="o">$</span><span class="n">residuals</span><span class="p">))</span> <span class="o">+</span>
+  <span class="nf">geom_boxplot</span><span class="p">()</span> <span class="o">+</span>
+  <span class="nf">geom_jitter</span><span class="p">(</span><span class="n">width</span> <span class="o">=</span> <span class="m">0.2</span><span class="p">,</span> <span class="n">size</span> <span class="o">=</span> <span class="m">0.1</span><span class="p">)</span> <span class="o">+</span>
+  <span class="nf">theme_bw</span><span class="p">()</span> <span class="o">+</span>
+  <span class="nf">ggtitle</span><span class="p">(</span><span class="s">&#39;Model Residuals by Year&#39;</span><span class="p">)</span>
+</pre></div>
+
+
+<h2>4.4 What assumptions are needed in each of these models?  Are these assumptions reasonable in the current context?</h2>
+<h3>Assumptions for the FE model</h3>
+<h4>Random sample from the cross section</h4>
+<p>This is presumed to be true during the data collection for this dataset. </p>
+<h4>Each explanatory variable changes over time and no perfect linear relationships exist among the explanatory variables.</h4>
+<p>This was analyzed via the describe function during the EDA analysis and is true.</p>
+<h4>Strict Exogeneity</h4>
+<p>Below we analyze the condition that $cov(x_{itj, \epsilon_{is}}) = 0$ which is required for strict exogeneity. </p>
+<div class="highlight"><pre><span></span><span class="c1"># Function that iterates over variables and years to compute covariance for strict exogeneity</span>
+<span class="n">df</span><span class="o">$</span><span class="n">fitted.fe</span> <span class="o">&lt;-</span> <span class="n">df</span><span class="o">$</span><span class="n">totfatrte</span> <span class="o">-</span> <span class="nf">residuals</span><span class="p">(</span><span class="n">model.fe2</span><span class="p">)</span>
+<span class="n">df</span><span class="o">$</span><span class="n">residuals.fe</span> <span class="o">&lt;-</span> <span class="nf">residuals</span><span class="p">(</span><span class="n">model.fe2</span><span class="p">)</span>
+
+<span class="n">df_model</span> <span class="o">&lt;-</span> <span class="nf">data.frame</span><span class="p">(</span><span class="nf">matrix</span><span class="p">(</span><span class="n">ncol</span> <span class="o">=</span> <span class="m">3</span><span class="p">,</span> <span class="n">nrow</span> <span class="o">=</span> <span class="m">0</span><span class="p">))</span>
+<span class="n">x</span> <span class="o">&lt;-</span> <span class="nf">c</span><span class="p">(</span><span class="s">&#39;year&#39;</span><span class="p">,</span> <span class="s">&#39;variable&#39;</span><span class="p">,</span> <span class="s">&#39;covariance&#39;</span><span class="p">)</span>
+<span class="nf">colnames</span><span class="p">(</span><span class="n">df_model</span><span class="p">)</span> <span class="o">&lt;-</span> <span class="n">x</span>
+
+<span class="nf">for </span><span class="p">(</span><span class="n">t</span> <span class="n">in</span> <span class="nf">unique</span><span class="p">(</span><span class="n">df</span><span class="o">$</span><span class="n">year</span><span class="p">)){</span>
+  <span class="nf">for </span><span class="p">(</span><span class="n">variable</span> <span class="n">in</span> <span class="nf">colnames</span><span class="p">(</span><span class="n">model.fe2</span><span class="o">$</span><span class="n">model</span><span class="p">)[</span><span class="nf">c</span><span class="p">(</span><span class="m">-1</span><span class="p">)]){</span>
+    <span class="nf">for </span><span class="p">(</span><span class="n">year_s</span> <span class="n">in</span> <span class="nf">unique</span><span class="p">(</span><span class="n">df</span><span class="o">$</span><span class="n">year</span><span class="p">)){</span>
+      <span class="n">c</span> <span class="o">=</span> <span class="nf">cov</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="o">$</span><span class="n">year</span> <span class="o">==</span> <span class="n">t</span><span class="p">,][</span><span class="n">variable</span><span class="p">],</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="o">$</span><span class="n">year</span> <span class="o">==</span> <span class="n">year_s</span><span class="p">,]</span><span class="o">$</span><span class="n">residuals.fe</span><span class="p">)</span>
+      <span class="n">df_model</span> <span class="o">&lt;-</span> <span class="nf">rbind</span><span class="p">(</span><span class="n">df_model</span><span class="p">,</span><span class="nf">data.frame</span><span class="p">(</span><span class="n">year</span> <span class="o">=</span> <span class="n">t</span><span class="p">,</span> <span class="n">variable</span> <span class="o">=</span> <span class="n">variable</span><span class="p">,</span> <span class="n">covariance</span> <span class="o">=</span> <span class="n">c</span><span class="p">[</span><span class="m">1</span><span class="p">]))</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="nf">ggplot</span><span class="p">(</span><span class="n">df_model</span><span class="p">,</span> <span class="nf">aes</span><span class="p">(</span><span class="n">x</span> <span class="o">=</span> <span class="n">year</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">covariance</span><span class="p">,</span> <span class="n">col</span> <span class="o">=</span> <span class="n">variable</span><span class="p">))</span><span class="o">+</span><span class="nf">geom_point</span><span class="p">()</span> <span class="o">+</span>
+    <span class="nf">xlab</span><span class="p">(</span><span class="s">&quot;Fitted values&quot;</span><span class="p">)</span><span class="o">+</span><span class="nf">ylab</span><span class="p">(</span><span class="s">&quot;Covariance&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="nf">ggtitle</span><span class="p">(</span><span class="s">&quot;Strict Exogenous Assumption - Fixed Effect Model&quot;</span><span class="p">)</span>
+</pre></div>
+
+
+<p>From the produced plot we can see that not all covariance values are close to or equal to zero and therefore this assumption is violated. We therefore do not have an unbiased model, however the fixed effect estimator may be consistent. </p>
+<p>When analyzing the covariance plot, all other variables besides vehicmilespc are close to zero. We normalized vehicmilespc in order to see if correlation would decrease, however it did not decrease to the point of stating that covariance is equal to zero. From our EDA section we observed that there was an overall increasing trend in vehicmilespc and an overall decreasing trend in totfatrte. From the plot above we can determine that there is a violation in the strict exogeneity assumption. However we choose to include the vehicmilespc variable as intuitively miles driven is an explanatory variable in predicting total fatality rate (if vehicmilespc = 0 the total fatalities from auto accidents would equal zero). </p>
+<h3>No Serial Correlation or Heterogeneity in the Error Term:</h3>
+<h4>Homoskedasticity</h4>
+<p>To get standard errors on the coefficients, we need a constant error variance. From the residuals vs fitted plot, there appears to be an increase in variance as the fitted values increases indicating heterogeneity.</p>
+<p>```{r echo=FALSE}
+library(lmtest)
+bptest(model.fe2)</p>
+<div class="highlight"><pre><span></span><span class="k">From</span> <span class="n">the</span> <span class="n">breush</span><span class="o">-</span><span class="n">pagan</span> <span class="n">test</span> <span class="n">we</span> <span class="n">can</span> <span class="n">see</span> <span class="n">that</span> <span class="n">there</span> <span class="k">is</span> <span class="n">heteroskedasticity</span> <span class="k">in</span> <span class="n">the</span> <span class="n">model</span><span class="p">.</span> <span class="n">One</span> <span class="k">option</span> <span class="n">would</span> <span class="n">be</span> <span class="k">to</span> <span class="n">utilize</span> <span class="n">heterostkedastic</span> <span class="n">robust</span> <span class="n">standard</span> <span class="n">errors</span><span class="p">.</span> <span class="n">This</span> <span class="n">analysis</span> <span class="n">will</span> <span class="k">not</span> <span class="n">be</span> <span class="n">carried</span> <span class="k">out</span> <span class="n">here</span><span class="p">.</span> 
+
+<span class="n">It</span> <span class="n">would</span> <span class="n">be</span> <span class="n">possible</span> <span class="k">to</span> <span class="n">compute</span> <span class="n">heterogeneous</span> <span class="n">robust</span> <span class="n">errors</span> <span class="k">using</span> <span class="n">the</span> <span class="n">variance</span> <span class="n">covariance</span> <span class="n">matrix</span><span class="p">.</span> 
+
+<span class="o">```</span><span class="err">{</span><span class="n">r</span><span class="err">}</span>
+<span class="n">coeftest</span><span class="p">(</span><span class="n">model</span><span class="p">.</span><span class="n">fe2</span><span class="p">,</span> <span class="n">vcov</span> <span class="o">=</span> <span class="n">vcovHC</span><span class="p">(</span><span class="n">model</span><span class="p">.</span><span class="n">fe2</span><span class="p">,</span> <span class="k">cluster</span> <span class="o">=</span> <span class="s1">&#39;group&#39;</span><span class="p">))</span>
+</pre></div>
+
+
+<p>Comparing the standard errors, we can see that the robust errors tended to err towards non-significance, particularly for the variables: perc14_24 and bac08. Bac10 is only signiciant at the 0.10 level using robust standard errors. </p>
+<h4>Serial Correlation:</h4>
+<p>We also must check for serial correlation, this can be completed by using the Breusch-Godfrey test. </p>
+<div class="highlight"><pre><span></span><span class="nf">pbgtest</span><span class="p">(</span><span class="n">model.fe2</span><span class="p">)</span>
+</pre></div>
+
+
+<p>The test statistic has a p-value &lt; 0.05 indicating that there is serial correlation present in our fixed effect model. The presence of serial correlation will further upset our standard error computation. </p>
+<h3>We also look further at the normal OLS assumptions:</h3>
+<h4>Zero conditional mean</h4>
+<p>```{r fig.height = 3, fig.width = 4, fig.align = "center"}</p>
+<p>df$fitted.fe &lt;- df$totfatrte - residuals(model.fe2)
+df$residuals.fe &lt;- residuals(model.fe2)</p>
+<p>ggplot(df, aes(fitted.fe, residuals.fe))+
+    geom_point() +
+    stat_smooth(method="loess")+
+    geom_hline(yintercept=0, col="red", linetype="dashed")+
+    xlab("Fitted values")+ylab("Residuals") +
+    ggtitle("Residual vs Fitted Plot")+
+    theme_bw()</p>
+<div class="highlight"><pre><span></span><span class="err">#### Normally Distributed Error</span>
+<span class="err">To conduct hypothesis t-tests for the LPM, we need normally distributed errors.</span>
+<span class="err">```{r fig.height = 3, fig.width = 4, fig.align = &quot;center&quot;}</span>
+<span class="err">ggplot(df, aes(sample=residuals.fe)) +</span>
+<span class="err">    stat_qq() + stat_qq_line() +</span>
+<span class="err">    xlab(&quot;Theoretical Quantiles&quot;) + ylab(&quot;Standardized Residuals&quot;) +</span>
+<span class="err">    ggtitle(&quot;Normal Q-Q&quot;)</span>
+</pre></div>
+
+
+<p>We can see that there is fairly significant deviation from the QQ line, indicating that the residuals are not normally distributed. </p>
+<h1>Question 5</h1>
+<ol>
+<li>Would you prefer to use a random effects model instead of the fixed effects model you built in <em>Exercise 4</em>? Please explain.</li>
+</ol>
+<div class="highlight"><pre><span></span><span class="n">model.re2</span><span class="o">&lt;-</span><span class="nf">plm</span><span class="p">(</span><span class="n">totfatrte</span> <span class="o">~</span>  <span class="n">d80</span> <span class="o">+</span> <span class="n">d81</span> <span class="o">+</span> <span class="n">d82</span> <span class="o">+</span> <span class="n">d83</span> <span class="o">+</span> <span class="n">d84</span> <span class="o">+</span> <span class="n">d85</span> <span class="o">+</span> <span class="n">d86</span> <span class="o">+</span> <span class="n">d87</span> <span class="o">+</span> <span class="n">d88</span> <span class="o">+</span> <span class="n">d89</span> <span class="o">+</span> <span class="n">d90</span> <span class="o">+</span> 
+     <span class="n">d91</span> <span class="o">+</span> <span class="n">d92</span> <span class="o">+</span> <span class="n">d93</span> <span class="o">+</span> <span class="n">d94</span> <span class="o">+</span> <span class="n">d95</span> <span class="o">+</span> <span class="n">d96</span> <span class="o">+</span> <span class="n">d97</span> <span class="o">+</span> <span class="n">d98</span> <span class="o">+</span> <span class="n">d99</span> <span class="o">+</span> <span class="n">d00</span> <span class="o">+</span> <span class="n">d01</span> <span class="o">+</span> <span class="n">d02</span> <span class="o">+</span> <span class="n">d03</span> <span class="o">+</span> <span class="n">bac10_binary</span> <span class="o">+</span> 
+       <span class="n">bac08_binary</span> <span class="o">+</span> <span class="n">perse_binary</span> <span class="o">+</span> <span class="n">sbprim</span> <span class="o">+</span> <span class="n">sbsecon</span> <span class="o">+</span> <span class="n">sl70plus_binary</span> <span class="o">+</span> <span class="n">gdl_binary</span> <span class="o">+</span> <span class="n">perc14_24</span> <span class="o">+</span> <span class="nf">log</span><span class="p">(</span><span class="n">unem</span><span class="p">)</span> <span class="o">+</span> 
+       <span class="n">vehicmilespc</span><span class="p">,</span> <span class="n">data</span> <span class="o">=</span> <span class="n">df</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="nf">c</span><span class="p">(</span><span class="s">&quot;state&quot;</span><span class="p">,</span> <span class="s">&quot;year&quot;</span><span class="p">),</span> <span class="n">model</span><span class="o">=</span><span class="s">&quot;random&quot;</span><span class="p">)</span>
+<span class="nf">summary</span><span class="p">(</span><span class="n">model.re2</span><span class="p">)</span>
+<span class="nf">phtest</span><span class="p">(</span><span class="n">model.fe2</span><span class="p">,</span> <span class="n">model.re2</span><span class="p">)</span>
+</pre></div>
+
+
+<p>Despite the  Hausman test results, we prefer the fixed effect model because the random effects model assumption is that the individual state specific effects are uncorrelated with the independent variable, and this assumption is not satisfied. Moreover, from analyzing the model parameters, the random and fixed effects tended to have similar coefficients and levels of significance. Therefore, we decide to go with the fixed effect model.</p>
+<h1>Question 6</h1>
+<p>Suppose that <em>vehicmilespc</em>, the number of miles driven per capita, increases by $1,000$. Using the FE estimates, what is the estimated effect on <em>totfatrte</em>? Please interpret the estimate.</p>
+<p>Based on the fixed effect model in part 4, the coefficient for norm_vehicmilespc is 0.133128.  Because this was a normalized variable we have to compensate to understand the effect: 
+$$\Delta totfatrte = 0.133128 \frac{100*1000}{18390-4372} = 0.9497$$
+Therefore a 1,000 mile increase will cause a 0.95 increase in the totfatrte variable.</p>
+<h1>Question 7</h1>
+<p>If there is serial correlation or heteroskedasticity in the idiosyncratic errors of the model, what would be the consequences on the estimators and their standard errors?</p>
+<p>Serial correlation or heteroskedasticity in the idosyncratic errors will cause the standard errors for the model to be incorrect. As described by Wooldridge, the central limit theorem can be invoked for first-differenced models. However for fixed effects models, this is not necessarily the case as we have not accounted for AR(1) effects. We can use the  Breusch-Godfrey test to test for serial correlation.  </p>
+<div class="highlight"><pre><span></span><span class="nf">pbgtest</span><span class="p">(</span><span class="n">model.fe2</span><span class="p">)</span>
+</pre></div>
+
+
+<p>We can see the test shows serial correlation, therefore our computed standard errors will likely be innacurate. </p></p>
+        </div>
+    </div>
+
+<div class="fh5co-narrow-content">
+<div class="animate-box" data-animate-effect="fadeInLeft">
+    <h2><!-- <i class="icon-speech-bubble"></i>  -->Comments</h2>
+</div>
+<div class="animate-box" data-animate-effect="fadeInLeft">
+    <div id="disqus_thread"></div>
+</div>
+
+<script>
+var disqus_config = function () { 
+  this.language = "english";
+};
+(function() { // DON'T EDIT BELOW THIS LINE
+var d = document, s = d.createElement('script');
+s.src = 'https://.disqus.com/embed.js';
+s.setAttribute('data-timestamp', +new Date());
+(d.head || d.body).appendChild(s);
+})();
+</script>
+<noscript><a href="https://disqus.com/?ref_noscript">Please enable JavaScript to view the comments powered by Disqus.</a></noscript>
+<div class="fh5co-footer">
+    <p><small>&copy; 2016 Blend Free HTML5. All Rights Reserved.</span> <span>Designed by <a href="http://freehtml5.co/" target="_blank">FreeHTML5.co</a></span>
+    <br /><span>Pelican Theme by: <a href="https://github.com/claudio-walser/pelican-fh5co-marble" target="_blank">Claudio Walser</a></span></small></p>
+
+</div>                
+        </div>
+    </div>
+
+    <!-- jQuery -->
+    <script src="https://aaron-j-olson.com/theme/js/jquery.min.js"></script>
+    <!-- jQuery Easing -->
+    <script src="https://aaron-j-olson.com/theme/js/jquery.easing.1.3.js"></script>
+    <!-- Bootstrap -->
+    <script src="https://aaron-j-olson.com/theme/js/bootstrap.min.js"></script>
+    <!-- Waypoints -->
+    <script src="https://aaron-j-olson.com/theme/js/jquery.waypoints.min.js"></script>
+    <!-- Flexslider -->
+    <script src="https://aaron-j-olson.com/theme/js/jquery.flexslider-min.js"></script>
+
+
+    <!-- MAIN JS -->
+    <script src="https://aaron-j-olson.com/theme/js/main.js"></script>
+    </body>
+</html>
