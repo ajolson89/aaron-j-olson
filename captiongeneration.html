@@ -155,10 +155,10 @@
 <p>Stacking multiple layers of LSTM cells has proven to be an effective way of increasing the accuracy of a language generation problem [13]. In this implementation we stack two LSTM cells (dimension 512) after the merge in order to create a deeper model architecture. While stacking LSTM’s has been shown to increase accuracy, there are also considerations that can reduce the effectiveness of this design. The number of parameters given our training set increased from the baseline parameter of 9.6 million to 11.7 million, inferring that training such a model will take a longer time period. Additionally, because we have developed a deeper model, it will generally perform better on larger datasets and longer training times.</p>
 <p><strong>Text analysis and Preprocessing</strong></p>
 <p>Our training set is comprised of 118 thousand captions generated from mscoco, reddit (subreddits related to food), yummly and senticap. Below we present text analysis on the original captions set:  </p>
-<p><img src="images/captiongen/image6.png" alt="Drawing" style="width: 750px;"/></p>
-<p><img src="images/captiongen/image13.png" alt="Drawing" style="width: 750px;"/></p>
-<p><img src="images/captiongen/image42.png" alt="Drawing" style="width: 750px;"/></p>
-<p>Our captions are comprised of released datasets (mscoco and senticap) as well as image/caption pairs scraped from reddit and yummly. Due to the variance among data sources our captions have different characteristics. From above we can see that the average caption length is 11.38 words (including start and end tags) however our distribution is heavily skewed (x axis limitation enforced on the image above) with a maximum caption length of 670 words from reddit. For our analysis we capped the max caption length at 24 which comprises the 99th percentile in the caption length distribution. </p>
+<p><img src="images/captiongen/image6.png" alt="Drawing" style="width: 500px;"/></p>
+<p><img src="images/captiongen/image13.png" alt="Drawing" style="width: 500px;"/></p>
+<p><img src="images/captiongen/image42.png" alt="Drawing" style="width: 500px;"/></p>
+<p>Our captions are comprised of released datasets (mscoco and senticap) as well as image/caption pairs scraped from reddit and yummly. Due to the variance among data sources our captions have different characteristics. From above we can see that the average caption length is 11.38 words (including start ands end tags) however our distribution is heavily skewed (x axis limitation enforced on the image above) with a maximum caption length of 670 words from reddit. For our analysis we capped the max caption length at 24 which comprises the 99th percentile in the caption length distribution. </p>
 <p>Included in the pre-processing phase to simplify dimensions were the following:</p>
 <ul>
 <li>Removal of words with fewer than two characters</li>
@@ -257,7 +257,7 @@ BLEU-2: 0.23878
   <tr>
    <td>
 
-<img src="images/captiongen/image9.jpg" width="" alt="alt_text" title="image_tooltip">
+<img src="images/captiongen/image9.jpg" width="150" alt="alt_text" title="image_tooltip">
 
    </td>
    <td>Flowers and produce sitting on counter top
@@ -273,7 +273,7 @@ BLEU-2: 0.23878
    <td>
 
 
-<img src="images/captiongen/image19.jpg" width="" alt="alt_text" title="image_tooltip">
+<img src="images/captiongen/image19.jpg" width="150" alt="alt_text" title="image_tooltip">
 
    </td>
    <td>Plate topped with lots of different kinds of food
@@ -290,7 +290,7 @@ BLEU-2: 0.23878
 
 
 
-<img src="images/captiongen/image12.jpg" width="" alt="alt_text" title="image_tooltip">
+<img src="images/captiongen/image12.jpg" width="150" alt="alt_text" title="image_tooltip">
 
    </td>
    <td>
@@ -306,7 +306,7 @@ BLEU-2: 0.23878
    <td>
 
 
-<img src="images/captiongen/image5.jpg" width="" alt="alt_text" title="image_tooltip">
+<img src="images/captiongen/image5.jpg" width="150" alt="alt_text" title="image_tooltip">
 
    </td>
    <td>Multiple (ex simple syrup with)
@@ -360,7 +360,7 @@ BLEU-2: 0.23878
   <tr>
    <td>
 
-<img src="images/captiongen/image15.jpg" width="" alt="alt_text" title="image_tooltip">
+<img src="images/captiongen/image15.png" width="150" alt="alt_text" title="image_tooltip">
 
    </td>
    <td>Beam Size (3): my plate of peanut chicken
@@ -374,8 +374,8 @@ Beam Size (50): cup of plate of
   </tr>
 </table>
 
-<p><img src="images/captiongen/image8.jpg" width="" alt="alt_text" title="image_tooltip"></p>
 <p>The picture and captions listed above tend to show that there is an optimum value of beam size in terms of generated captions. By reading through a number of generated captions qualitatively, it was evident that a beam size of 7 overall generated the most appropriate captions. For the larger 7,000 training captions that were generated, a beam size of 3 was used due to computational limitations. Additionally, caption length appears to vary with beam size. </p>
+<p><img src="images/captiongen/image8.png" width="" alt="alt_text" title="image_tooltip"></p>
 <p>From analysis of the training corpus, many Reddit posts had an overall shorter word count. When the LSTM model attempts to predict the next word given the current state and preceding word, it may optimize to a longer sequence of words. Whereas for a larger beam size (more potential options being weighed), the shorter sequences overall produced a ‘better caption’ because they fit well with captions trained on reddit data. According to Jia et. all, use of log-likelihood/categorical cross entropy can cause a preference to shorter language generation  due to summation  over  the  log-likelihood of more words leading to a smaller value and will also inflate low BLEU scores (BLEU-1 or 2) [12,18]. This is further supported by the relatively shorter captions generated by the models comparing to the reference caption, plots of this analysis are located in the appendix section. </p>
 <p><em>Language Model Comparison</em></p>
 <p>Examining the vocabulary of the predicted captions, it is evident that all three models are repeating words. Vocabulary counts for each of the models compared to the reference is presented here: </p>
@@ -427,7 +427,7 @@ Beam Size (50): cup of plate of
 <p>Overall vocabulary count for every model analyzed is significantly lower than the reference. Chorowski et. all term this phenomenon overconfidence and relate it to the decoding phase of the language model as well as the cross-entropy loss function[25]. The bi-directional model optimized on stochastic gradient descent produced a larger vocabulary than the model trained on rmsprop. Analyzing the stochastic gradient descent algorithm, it can be inferred that the SGD’s fluctuations enable it to jump to a new local minimum, which may prevent the overconfidence minimization previously addressed [26].  One way that we could try and address this diversity issue is “softening” the outputs through a “temperature” greater than 1 [25,29]. Essentially by re-scaling logits by a divisor greater than one before applying softmax, we achieve probabilities that approach a uniform distribution as the temperature hyperparameter increases so that other candidate words have higher chances of being selected [25,29]. The risk for higher diversity in this case is a higher error rate which we would explore in future implementations.</p>
 <p>Analyzing the top words in the vocabulary, the reference and bi-directional model trained using SGD contained words related closer to food than the baseline, bi-directional or stacked models. Both the stacked and bi-directional (rmsprop) models frequently use the word ‘delicious’ which was present in the repeated caption ‘this is delicious’ and further identifies potential overfitting[25]. </p>
 <p>As previously noted, between the train and test sets there is a notable difference in sentiment (more sentiment in the training set where the test is primarily objective). We kept sentiment in the training set because we had wanted to see if the model would allow for transfer learning where sentiment could be carried over and applied to new images that aren’t sentimental [1,4]. Our train sentiment data primarily came from senticap (non-food related), however reddit train data also contained sentiment. </p>
-<p><img src="images/captiongen/image26.jpg" width="" alt="alt_text" title="image_tooltip"></p>
+<p><img src="images/captiongen/image26.png" width="" alt="alt_text" title="image_tooltip"></p>
 <p>From the plot, it can be observed that the three models contain a higher proportion of sentiment compared to the original or reference captions. This is in line with our intuition and shows that the all models retained sentiment </p>
 <p><strong>Hindsight: Other Challenges and Limitations </strong></p>
 <p>As no implementation is without flaws, we delve into some discussion to explicitly highlight some of the limitations of our process and the bearing on results beyond those discussed previously.  Note that we will suggest possible solutions and next steps to these delineated issues in the final section that follows.</p>
@@ -505,7 +505,7 @@ Empirical Evaluation of Gated Recurrent Neural Networks on Sequence Modeling.   
    </td>
    <td>
 
-<img src="images/captiongen/image16.jpg" width="" alt="alt_text" title="image_tooltip">
+<img src="images/captiongen/image16.png" width="150" alt="alt_text" title="image_tooltip">
 
    </td>
    <td>A giraffe standing next to a tree
@@ -519,7 +519,7 @@ Empirical Evaluation of Gated Recurrent Neural Networks on Sequence Modeling.   
    <td>
 
 
-<img src="images/captiongen/image20.jpg" width="" alt="alt_text" title="image_tooltip">
+<img src="images/captiongen/image20.jpg" width="150" alt="alt_text" title="image_tooltip">
 
    </td>
    <td> Baked halibut with orzo  spinach  and cherry tomatoes epicurious  
@@ -533,7 +533,7 @@ Empirical Evaluation of Gated Recurrent Neural Networks on Sequence Modeling.   
    <td>
 
 
-<img src="images/captiongen/image23.jpg" width="" alt="alt_text" title="image_tooltip">
+<img src="images/captiongen/image23.jpg" width="150" alt="alt_text" title="image_tooltip">
 
    </td>
    <td>Shakshuka for breakfast eggs poached in a spicy tomato sauce
@@ -546,7 +546,7 @@ Empirical Evaluation of Gated Recurrent Neural Networks on Sequence Modeling.   
    </td>
    <td>
 
-<img src="images/captiongen/image17.jpg" width="" alt="alt_text" title="image_tooltip">
+<img src="images/captiongen/image17.jpg" width="150" alt="alt_text" title="image_tooltip">
 
    </td>
    <td>A delicious food with a drizzle of caramel sauce on a white plate and a banana topping the pastry
@@ -555,12 +555,12 @@ Empirical Evaluation of Gated Recurrent Neural Networks on Sequence Modeling.   
 </table>
 
 <p>POS tagging for the different training datasets. There is similar distribution between all four datasets with respect to nouns and adjectives.  </p>
-<p><img src="images/captiongen/image25.jpg" width="" alt="alt_text" title="image_tooltip"></p>
+<p><img src="images/captiongen/image25.png" width="" alt="alt_text" title="image_tooltip"></p>
 <p>POS tagging for COCO dataset. The reference dataset has more unique tags (diverse language model) than the produced captions. This is confirmed by the size of the vocabulary, and critical analysis of the produced captions. As mentioned in the text, POS wasn’t as accurate for generated captions, likely due to odd transmissions between words. </p>
-<p><img src="images/captiongen/image18.jpg" width="" alt="alt_text" title="image_tooltip"></p>
+<p><img src="images/captiongen/image18.png" width="" alt="alt_text" title="image_tooltip"></p>
 <p>Caption length for the COCO dataset predictions. Similar distribution for the max limit, however the average caption length fluctuates for the different models. Baseline model actually increased the caption length in comparison to the reference captions. </p>
-<p><img src="images/captiongen/image22.jpg" width="" alt="alt_text" title="image_tooltip"></p>
-<p><img src="images/captiongen/image4.jpg" width="" alt="alt_text" title="image_tooltip"></p>
+<p><img src="images/captiongen/image22.png" width="" alt="alt_text" title="image_tooltip"></p>
+<p><img src="images/captiongen/image4.png" width="" alt="alt_text" title="image_tooltip"></p>
 <p>Top five predicted nouns and adjectives by model and test set. NLTK was used to provide POS tagging. As can be observed, in many cases the POS tags are incorrect. In many cases, our generated captions do not have english fluency, POS tagging relies on transmission probabilities to accurately predict a sequence of tags. Likely due to the lack of fluency in many captions, the POS tagging algorithm had a hard time correctly mapping POS.</p>
 <table>
   <tr>
