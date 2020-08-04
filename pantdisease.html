@@ -1,0 +1,856 @@
+
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+    <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Plant Pathology - Kaggle Competition</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <meta name="author" content="Aaron Olson" />
+    <meta name="description" content="This analysis uses different image classification transfer learning techniques in order to predict the disease (or lack thereof) on plant leaves." />
+    <meta name="keywords" content="Image Classification, pytorch, python">
+<!-- Facebook and Twitter integration -->
+<meta property="og:site_name" content="Aaron J. Olson - Portfolio"/>
+<meta property="og:title" content="Plant Pathology - Kaggle Competition"/>
+<meta property="og:description" content="This analysis uses different image classification transfer learning techniques in order to predict the disease (or lack thereof) on plant leaves."/>
+<meta property="og:url" content="https://aaron-j-olson.com/pantdisease.html"/>
+<meta property="og:type" content="article"/>
+<meta property="article:published_time" content="2020-05-08 20:00:00-04:00"/>
+<meta property="article:modified_time" content=""/>
+<meta property="article:author" content="https://aaron-j-olson.com/author/aaron-olson.html">
+<meta property="article:section" content="posts"/>
+    <meta property="article:tag" content="Image Classification"/>
+    <meta property="article:tag" content="pytorch"/>
+    <meta property="article:tag" content="python"/>
+    <meta property="og:image" content="\images\olson.jpg">
+
+    <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700" rel="stylesheet">
+
+    <!-- Animate.css -->
+    <link rel="stylesheet" href="https://aaron-j-olson.com/theme/css/animate.css">
+    <!-- Icomoon Icon Fonts-->
+    <link rel="stylesheet" href="https://aaron-j-olson.com/theme/css/icomoon.css">
+    <!-- Bootstrap  -->
+    <link rel="stylesheet" href="https://aaron-j-olson.com/theme/css/bootstrap.css">
+    <!-- Flexslider  -->
+    <link rel="stylesheet" href="https://aaron-j-olson.com/theme/css/flexslider.css">
+    <!-- Theme style  -->
+    <link rel="stylesheet" href="https://aaron-j-olson.com/theme/css/style.css">
+    <!-- Custom style  -->
+    <link rel="stylesheet" href="https://aaron-j-olson.com/theme/css/custom.css">
+    <!-- pygments code highlight -->
+    <link rel="stylesheet" href="https://aaron-j-olson.com/theme/css/pygments.css">
+    <!-- tipue search -->
+    <link rel="stylesheet" href="https://aaron-j-olson.com/theme/tipuesearch/css/tipuesearch.css">
+
+    <!-- Modernizr JS -->
+    <script src="https://aaron-j-olson.com/theme/js/modernizr-2.6.2.min.js"></script>
+    <!-- FOR IE9 below -->
+    <!--[if lt IE 9]>
+    <script src="/theme/js/respond.min.js"></script>
+    <![endif]-->
+        <link href="https://aaron-j-olson.com/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Aaron J. Olson - Portfolio Atom">
+
+
+
+    </head>
+    <body>
+    <div id="fh5co-page">
+        <a href="#" class="js-fh5co-nav-toggle fh5co-nav-toggle"><i></i></a>
+        <aside id="fh5co-aside" role="complementary" class="border js-fullheight">
+
+            <nav class="fh5co-main-menu" role="navigation">
+            </nav>
+            <div class="clearfix"></div>
+            <h1  id="fh5co-logo">
+                <a href="https://aaron-j-olson.com/index.html">
+                    <img src="\images\olson.jpg" />
+                </a>
+            </h1>
+            <nav class="fh5co-main-menu" role="navigation">
+<ul>
+    <!-- home link -->
+    <li><a href="https://aaron-j-olson.com/">Home</a></li>
+
+    <!-- page links -->
+            <li><a href="https://aaron-j-olson.com/pages/home.html">About Me</a></li>
+
+    <!-- categories -->
+        <li><a href="https://aaron-j-olson.com/categories.html">Categories</a></li>
+
+    <!-- tags -->
+        <li><a href="https://aaron-j-olson.com/tags.html">Tags</a></li>
+
+    <!-- additional menu items from config -->
+        <!-- <li class="nav-title">Misc</li> -->
+            <li><a href="https://aaron-j-olson.com/archives.html">Archive</a></li>
+            <li><a href="https://aaron-j-olson.com/contact.html">Contact</a></li>
+
+</ul>
+            </nav>
+
+<ul id="social">
+            <li><a href="https://github.com/ajolson89" alt="Github"><i class="icon-github"></i></a></li>
+
+            <li><a href="https://www.linkedin.com/in/aaron-j-olson/" alt="LinkedIn"><i class="icon-linkedin2"></i></a></li>
+
+</ul>
+        </aside>
+
+        <div id="fh5co-main">
+
+    <div class="fh5co-narrow-content article-content">
+        <h1 class="fh5co-heading-colored">Plant Pathology - Kaggle Competition</h1>
+
+        <div>by
+                <a href="author/aaron-olson.html">Aaron Olson</a> - Fri 08 May 2020
+        </div>
+
+            <div><span>Tags: </span>
+                    <span><a href="https://aaron-j-olson.com/tag/image-classification.html">#Image Classification</a> </span>
+                    <span><a href="https://aaron-j-olson.com/tag/pytorch.html">#pytorch</a> </span>
+                    <span><a href="https://aaron-j-olson.com/tag/python.html">#python</a> </span>
+            </div>
+
+        <div class="animate-box" data-animate-effect="fadeInLeft">
+            <p class="animate-box" data-animate-effect="fadeInLeft"><div class="highlight"><pre><span></span><span class="c1"># Import Libraries</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span><span class="p">,</span> <span class="n">division</span>
+
+
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">pickle</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">tqdm</span>
+<span class="kn">import</span> <span class="nn">scipy</span><span class="o">,</span> <span class="nn">scipy.misc</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">from</span> <span class="nn">PIL</span> <span class="kn">import</span> <span class="n">Image</span>
+<span class="kn">from</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">import</span> <span class="n">imshow</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">defaultdict</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">seaborn</span> <span class="k">as</span> <span class="nn">sns</span>
+<span class="kn">from</span> <span class="nn">shutil</span> <span class="kn">import</span> <span class="n">copyfile</span>
+
+<span class="kn">from</span> <span class="nn">PIL</span> <span class="kn">import</span> <span class="n">Image</span>
+<span class="kn">from</span> <span class="nn">skimage.metrics</span> <span class="kn">import</span> <span class="n">structural_similarity</span> <span class="k">as</span> <span class="n">ssim</span>
+<span class="o">%</span><span class="n">matplotlib</span> <span class="n">inline</span>
+<span class="kn">from</span> <span class="nn">scipy.spatial</span> <span class="kn">import</span> <span class="n">distance</span>
+
+
+
+<span class="kn">import</span> <span class="nn">torch</span>
+<span class="kn">import</span> <span class="nn">torch.nn</span> <span class="k">as</span> <span class="nn">nn</span>
+<span class="kn">import</span> <span class="nn">torch.optim</span> <span class="k">as</span> <span class="nn">optim</span>
+<span class="kn">from</span> <span class="nn">torch.optim</span> <span class="kn">import</span> <span class="n">lr_scheduler</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">torchvision</span>
+<span class="kn">from</span> <span class="nn">torchvision</span> <span class="kn">import</span> <span class="n">datasets</span><span class="p">,</span> <span class="n">models</span><span class="p">,</span> <span class="n">transforms</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">copy</span>
+
+<span class="n">filepath</span> <span class="o">=</span> <span class="s1">&#39;C:</span><span class="se">\\</span><span class="s1">Users</span><span class="se">\\</span><span class="s1">AOlson</span><span class="se">\\</span><span class="s1">Documents</span><span class="se">\\</span><span class="s1">Kaggle</span><span class="se">\\</span><span class="s1">plant_pathology&#39;</span>
+</pre></div>
+
+
+<div class="highlight"><pre><span></span><span class="c1"># Read in Train csv</span>
+<span class="n">train</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">filepath</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\\</span><span class="s1">train.csv&#39;</span><span class="p">)</span>
+<span class="n">test</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">filepath</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\\</span><span class="s1">test.csv&#39;</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">target</span><span class="p">(</span><span class="n">row</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;healthy&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s1">&#39;healthy&#39;</span>
+    <span class="k">elif</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;multiple_diseases&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s1">&#39;multiple_diseases&#39;</span>
+    <span class="k">elif</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;rust&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s1">&#39;rust&#39;</span>
+    <span class="k">elif</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;scab&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s1">&#39;scab&#39;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s1">&#39;N/A&#39;</span>
+<span class="n">train</span><span class="p">[</span><span class="s1">&#39;y&#39;</span><span class="p">]</span>  <span class="o">=</span> <span class="n">train</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">axis</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">train</span><span class="p">[</span><span class="s1">&#39;y&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">())</span>
+<span class="n">train</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+
+
+<div class="highlight"><pre><span></span><span class="err">[&#39;scab&#39; &#39;multiple_diseases&#39; &#39;healthy&#39; &#39;rust&#39;]</span>
+</pre></div>
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>image_id</th>
+      <th>healthy</th>
+      <th>multiple_diseases</th>
+      <th>rust</th>
+      <th>scab</th>
+      <th>y</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>Train_0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>scab</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>Train_1</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>multiple_diseases</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>Train_2</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>healthy</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>Train_3</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>rust</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>Train_4</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>healthy</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+<div class="highlight"><pre><span></span><span class="n">train</span><span class="o">.</span><span class="n">healthy</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span>
+<span class="n">train</span><span class="o">.</span><span class="n">multiple_diseases</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span>
+<span class="n">train</span><span class="o">.</span><span class="n">rust</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span>
+<span class="n">train</span><span class="o">.</span><span class="n">scab</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span>
+</pre></div>
+
+
+<div class="highlight"><pre><span></span><span class="err">array([1, 0], dtype=int64)</span>
+</pre></div>
+
+
+<p>From a quick EDA, as well as from the dataset description - we understand that the prediction columns (healthy, multiple_diseases, rust and scab) are essentially post one-hot encoding of a disease column. Therefore we need to regenerate the disease column in order to predict the disease accurately. It could also be possible to train multiple image classification models one for each disease. The problem here is the 'multiple_diseases' category. If we are trianing a model to predict rust or not-rust (binary), and we show a picture of a plant that has rust and scab, our dataset will label this as multiple_diseases (or not-rust). Therefore it's better to build a single model (or potentially ensemble of models) in order to predict from one of four categories. </p>
+<div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;healthy&#39;</span><span class="p">,</span> <span class="s1">&#39;multiple_diseases&#39;</span><span class="p">,</span> <span class="s1">&#39;rust&#39;</span><span class="p">,</span> <span class="s1">&#39;scab&#39;</span><span class="p">]:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">col</span> <span class="o">+</span> <span class="s2">&quot;: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">train</span><span class="p">[</span><span class="n">train</span><span class="p">[</span><span class="n">col</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">])</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">train</span><span class="p">),</span> <span class="mi">2</span><span class="p">)))</span>
+</pre></div>
+
+
+<div class="highlight"><pre><span></span><span class="n">healthy</span><span class="o">:</span> <span class="mf">0.28</span>
+<span class="n">multiple_diseases</span><span class="o">:</span> <span class="mf">0.05</span>
+<span class="n">rust</span><span class="o">:</span> <span class="mf">0.34</span>
+<span class="n">scab</span><span class="o">:</span> <span class="mf">0.33</span>
+</pre></div>
+
+
+<div class="highlight"><pre><span></span><span class="n">image_filesize</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="c1"># rotate image if in vertical orientation</span>
+<span class="c1"># for x, row in train.iterrows():</span>
+<span class="c1">#     image = Image.open(filepath + &#39;\\images\\&#39; + row[&#39;image_id&#39;] + &#39;.jpg&#39;)</span>
+<span class="c1">#     data = np.asarray(image)</span>
+<span class="c1">#     if data.shape == (2048, 1365, 3):</span>
+<span class="c1">#         data = np.rot90(data, k=1, axes=(0, 1))</span>
+<span class="c1">#         image = image.rotate(90)</span>
+<span class="c1">#         image.save(filepath + &#39;\\images\\&#39; + row[&#39;image_id&#39;] + &#39;.jpg&#39;)</span>
+<span class="c1">#     image_filesize.append(data.shape)</span>
+
+
+<span class="c1"># for x, row in test.iterrows():</span>
+<span class="c1">#     image = Image.open(filepath + &#39;\\images\\&#39; + row[&#39;image_id&#39;] + &#39;.jpg&#39;)</span>
+<span class="c1">#     data = np.asarray(image)</span>
+<span class="c1">#     if data.shape == (2048, 1365, 3):</span>
+<span class="c1">#         data = np.rot90(data, k=1, axes=(0, 1))</span>
+<span class="c1">#         image = image.rotate(90)</span>
+<span class="c1">#         image.save(filepath + &#39;\\images\\&#39; + row[&#39;image_id&#39;] + &#39;.jpg&#39;)</span>
+<span class="c1">#     image_filesize.append(data.shape)</span>
+</pre></div>
+
+
+<p>The code above takes the images and if saved in a vertical orientation, rotates them 90 deg. This will help when loading the images. There are various transformations that are used to make the images suitable for the models we will train with. Having consistent orientation will ensure the vertical and horizontal crops are applied correctly.</p>
+<p>Below is a confusion matrix for the various types of diseases and pictures. What becomes quickly evident is that there is approximately equal proportion (using approximate loosely) for healthy, rust and scab - however there is dispraportionately lower numbers of multiple-disease images. This may be difficult therefore to learn as the nuances between a leaf with rust and a leaf with rust and scab may be difficult to learn. </p>
+<p>One way to improve upon this inconsistency would be to apply image augmentation to the multiple disease images in order to generate a larger training dataset. </p>
+<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="kn">import</span> <span class="n">confusion_matrix</span>
+
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span><span class="mi">20</span><span class="p">))</span>
+<span class="n">targets</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;healthy&#39;</span><span class="p">,</span> <span class="s1">&#39;multiple_diseases&#39;</span><span class="p">,</span> <span class="s1">&#39;rust&#39;</span><span class="p">,</span> <span class="s1">&#39;scab&#39;</span><span class="p">]</span>
+<span class="k">for</span> <span class="n">z</span><span class="p">,</span> <span class="n">c</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">targets</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">y</span><span class="p">,</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">([</span><span class="n">b</span> <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">targets</span> <span class="k">if</span> <span class="n">b</span> <span class="o">!=</span> <span class="n">c</span><span class="p">]):</span>
+        <span class="n">sns</span><span class="o">.</span><span class="n">heatmap</span><span class="p">(</span><span class="n">confusion_matrix</span><span class="p">(</span><span class="n">train</span><span class="p">[</span><span class="n">c</span><span class="p">],</span> <span class="n">train</span><span class="p">[</span><span class="n">x</span><span class="p">]),</span> <span class="n">annot</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">ax</span><span class="p">[</span><span class="n">z</span><span class="p">,</span> <span class="n">y</span><span class="p">],</span> <span class="n">fmt</span><span class="o">=</span><span class="s1">&#39;g&#39;</span><span class="p">)</span>
+        <span class="n">ax</span><span class="p">[</span><span class="n">z</span><span class="p">,</span> <span class="n">y</span><span class="p">]</span><span class="o">.</span><span class="n">xaxis</span><span class="o">.</span><span class="n">set_ticklabels</span><span class="p">([</span><span class="n">x</span> <span class="o">+</span> <span class="s1">&#39; = 0&#39;</span><span class="p">,</span> <span class="n">x</span> <span class="o">+</span> <span class="s1">&#39; = 1&#39;</span><span class="p">]);</span> <span class="n">ax</span><span class="p">[</span><span class="n">z</span><span class="p">,</span> <span class="n">y</span><span class="p">]</span><span class="o">.</span><span class="n">yaxis</span><span class="o">.</span><span class="n">set_ticklabels</span><span class="p">([</span><span class="n">c</span> <span class="o">+</span> <span class="s1">&#39; = 0&#39;</span><span class="p">,</span> <span class="n">c</span> <span class="o">+</span> <span class="s1">&#39; = 1&#39;</span><span class="p">])</span>
+</pre></div>
+
+
+<p>)
+<img align="center" width = "750" src="images/plantdisease/output_8_0.png" alt="Drawing"/></p>
+<div class="highlight"><pre><span></span><span class="c1"># Write images to folder for healthy category</span>
+<span class="n">targets</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;healthy&#39;</span><span class="p">,</span> <span class="s1">&#39;multiple_diseases&#39;</span><span class="p">,</span> <span class="s1">&#39;rust&#39;</span><span class="p">,</span> <span class="s1">&#39;scab&#39;</span><span class="p">]</span>
+<span class="n">size</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">train</span><span class="p">)</span>
+<span class="n">master_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span>
+
+<span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">targets</span><span class="p">:</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">train</span><span class="p">[</span><span class="n">train</span><span class="p">[</span><span class="n">x</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">]</span>
+    <span class="n">t</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">frac</span> <span class="o">=</span> <span class="mf">0.8</span><span class="p">,</span> <span class="n">random_state</span> <span class="o">=</span> <span class="mi">200</span><span class="p">)</span>
+    <span class="n">master_df</span> <span class="o">=</span> <span class="n">master_df</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">ignore_index</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
+
+<span class="n">val</span> <span class="o">=</span> <span class="n">master_df</span><span class="p">[</span><span class="o">~</span><span class="n">master_df</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">t</span><span class="p">)]</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span>
+<span class="c1"># try:</span>
+<span class="c1">#     for x, row in master_df.iterrows():</span>
+<span class="c1">#         copyfile(filepath + &#39;\\images\\&#39; + row[&#39;image_id&#39;] + &#39;.jpg&#39;, filepath + &#39;\\images_category\\train\\&#39; + row[&#39;y&#39;] + &#39;\\&#39; + row[&#39;image_id&#39;] + &#39;.jpg&#39;)</span>
+<span class="c1">#     for x, row in val.iterrows():</span>
+<span class="c1">#         copyfile(filepath + &#39;\\images\\&#39; + row[&#39;image_id&#39;] + &#39;.jpg&#39;, filepath +  &#39;\\images_category\\val\\&#39; + row[&#39;y&#39;] + &#39;\\&#39; + row[&#39;image_id&#39;] + &#39;.jpg&#39;)</span>
+<span class="c1"># except:</span>
+<span class="c1">#     print(x, row)</span>
+
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="k">for</span> <span class="n">x</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">test</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
+<span class="c1">#         os.mkdir(filepath + &#39;\\images_category\\test_images\\&#39; + row[&#39;image_id&#39;] + &#39;\\&#39;)</span>
+        <span class="n">copyfile</span><span class="p">(</span><span class="n">filepath</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\\</span><span class="s1">images</span><span class="se">\\</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;image_id&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;.jpg&#39;</span><span class="p">,</span> <span class="n">filepath</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\\</span><span class="s1">images_category</span><span class="se">\\</span><span class="s1">test_images</span><span class="se">\\</span><span class="s1">healthy</span><span class="se">\\</span><span class="s1">&#39;</span>  <span class="o">+</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;image_id&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;.jpg&#39;</span><span class="p">)</span>
+<span class="k">except</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">row</span><span class="p">)</span>
+</pre></div>
+
+
+<p>The code above creates the folder structure that can be utilized with the datasets.Imageloader method from pytorch.</p>
+<div class="highlight"><pre><span></span><span class="n">test</span><span class="o">.</span><span class="n">tail</span><span class="p">()</span>
+</pre></div>
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>image_id</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>1816</th>
+      <td>Test_1816</td>
+    </tr>
+    <tr>
+      <th>1817</th>
+      <td>Test_1817</td>
+    </tr>
+    <tr>
+      <th>1818</th>
+      <td>Test_1818</td>
+    </tr>
+    <tr>
+      <th>1819</th>
+      <td>Test_1819</td>
+    </tr>
+    <tr>
+      <th>1820</th>
+      <td>Test_1820</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+<div class="highlight"><pre><span></span><span class="c1"># Data augmentation and normalization for training</span>
+<span class="c1"># Just normalization for validation</span>
+<span class="n">data_transforms</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;train&#39;</span><span class="p">:</span> <span class="n">transforms</span><span class="o">.</span><span class="n">Compose</span><span class="p">([</span>
+        <span class="n">transforms</span><span class="o">.</span><span class="n">RandomResizedCrop</span><span class="p">(</span><span class="mi">224</span><span class="p">),</span>
+        <span class="n">transforms</span><span class="o">.</span><span class="n">RandomHorizontalFlip</span><span class="p">(),</span>
+        <span class="n">transforms</span><span class="o">.</span><span class="n">ToTensor</span><span class="p">(),</span>
+        <span class="n">transforms</span><span class="o">.</span><span class="n">Normalize</span><span class="p">([</span><span class="mf">0.485</span><span class="p">,</span> <span class="mf">0.456</span><span class="p">,</span> <span class="mf">0.406</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.229</span><span class="p">,</span> <span class="mf">0.224</span><span class="p">,</span> <span class="mf">0.225</span><span class="p">])</span>
+    <span class="p">]),</span>
+    <span class="s1">&#39;val&#39;</span><span class="p">:</span> <span class="n">transforms</span><span class="o">.</span><span class="n">Compose</span><span class="p">([</span>
+        <span class="n">transforms</span><span class="o">.</span><span class="n">Resize</span><span class="p">(</span><span class="mi">256</span><span class="p">),</span>
+        <span class="n">transforms</span><span class="o">.</span><span class="n">CenterCrop</span><span class="p">(</span><span class="mi">224</span><span class="p">),</span>
+        <span class="n">transforms</span><span class="o">.</span><span class="n">ToTensor</span><span class="p">(),</span>
+        <span class="n">transforms</span><span class="o">.</span><span class="n">Normalize</span><span class="p">([</span><span class="mf">0.485</span><span class="p">,</span> <span class="mf">0.456</span><span class="p">,</span> <span class="mf">0.406</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.229</span><span class="p">,</span> <span class="mf">0.224</span><span class="p">,</span> <span class="mf">0.225</span><span class="p">])</span>
+    <span class="p">]),</span>
+<span class="p">}</span>
+
+<span class="n">data_dir</span> <span class="o">=</span> <span class="n">filepath</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\\</span><span class="s1">images_category&#39;</span>
+<span class="n">image_datasets</span> <span class="o">=</span> <span class="p">{</span><span class="n">x</span><span class="p">:</span> <span class="n">datasets</span><span class="o">.</span><span class="n">ImageFolder</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data_dir</span><span class="p">,</span> <span class="n">x</span><span class="p">),</span>
+                                          <span class="n">data_transforms</span><span class="p">[</span><span class="n">x</span><span class="p">])</span>
+                  <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;train&#39;</span><span class="p">,</span> <span class="s1">&#39;val&#39;</span><span class="p">]}</span>
+<span class="n">dataloaders</span> <span class="o">=</span> <span class="p">{</span><span class="n">x</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">DataLoader</span><span class="p">(</span><span class="n">image_datasets</span><span class="p">[</span><span class="n">x</span><span class="p">],</span> <span class="n">batch_size</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>
+                                             <span class="n">shuffle</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">num_workers</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+              <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;train&#39;</span><span class="p">,</span> <span class="s1">&#39;val&#39;</span><span class="p">]}</span>
+<span class="n">dataset_sizes</span> <span class="o">=</span> <span class="p">{</span><span class="n">x</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">image_datasets</span><span class="p">[</span><span class="n">x</span><span class="p">])</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;train&#39;</span><span class="p">,</span> <span class="s1">&#39;val&#39;</span><span class="p">]}</span>
+<span class="n">class_names</span> <span class="o">=</span> <span class="n">image_datasets</span><span class="p">[</span><span class="s1">&#39;train&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">classes</span>
+
+<span class="n">device</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">device</span><span class="p">(</span><span class="s2">&quot;cuda:0&quot;</span> <span class="k">if</span> <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">is_available</span><span class="p">()</span> <span class="k">else</span> <span class="s2">&quot;cpu&quot;</span><span class="p">)</span>
+
+<span class="n">class_names</span>
+</pre></div>
+
+
+<div class="highlight"><pre><span></span><span class="err">[&#39;healthy&#39;, &#39;multiple_diseases&#39;, &#39;rust&#39;, &#39;scab&#39;]</span>
+</pre></div>
+
+
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">imshow</span><span class="p">(</span><span class="n">inp</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Imshow for Tensor.&quot;&quot;&quot;</span>
+    <span class="n">inp</span> <span class="o">=</span> <span class="n">inp</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span><span class="o">.</span><span class="n">transpose</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+    <span class="n">mean</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.485</span><span class="p">,</span> <span class="mf">0.456</span><span class="p">,</span> <span class="mf">0.406</span><span class="p">])</span>
+    <span class="n">std</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.229</span><span class="p">,</span> <span class="mf">0.224</span><span class="p">,</span> <span class="mf">0.225</span><span class="p">])</span>
+    <span class="n">inp</span> <span class="o">=</span> <span class="n">std</span> <span class="o">*</span> <span class="n">inp</span> <span class="o">+</span> <span class="n">mean</span>
+    <span class="n">inp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">inp</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">inp</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">title</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="n">title</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">pause</span><span class="p">(</span><span class="mf">0.001</span><span class="p">)</span>  <span class="c1"># pause a bit so that plots are updated</span>
+
+
+<span class="c1"># Get a batch of training data</span>
+<span class="n">inputs</span><span class="p">,</span> <span class="n">classes</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="nb">iter</span><span class="p">(</span><span class="n">dataloaders</span><span class="p">[</span><span class="s1">&#39;train&#39;</span><span class="p">]))</span>
+
+<span class="c1"># Make a grid from batch</span>
+<span class="n">out</span> <span class="o">=</span> <span class="n">torchvision</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">make_grid</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span>
+
+<span class="n">imshow</span><span class="p">(</span><span class="n">out</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="p">[</span><span class="n">class_names</span><span class="p">[</span><span class="n">x</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">classes</span><span class="p">])</span>
+</pre></div>
+
+
+<p><img align="center" width = "750" src="images/plantdisease/output_13_0.png" alt="Drawing"/></p>
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">train_model</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">criterion</span><span class="p">,</span> <span class="n">optimizer</span><span class="p">,</span> <span class="n">scheduler</span><span class="p">,</span> <span class="n">num_epochs</span><span class="o">=</span><span class="mi">25</span><span class="p">):</span>
+    <span class="n">since</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+
+    <span class="n">best_model_wts</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">state_dict</span><span class="p">())</span>
+    <span class="n">best_acc</span> <span class="o">=</span> <span class="mf">0.0</span>
+
+    <span class="k">for</span> <span class="n">epoch</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_epochs</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Epoch </span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">epoch</span><span class="p">,</span> <span class="n">num_epochs</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;-&#39;</span> <span class="o">*</span> <span class="mi">10</span><span class="p">)</span>
+
+        <span class="c1"># Each epoch has a training and validation phase</span>
+        <span class="k">for</span> <span class="n">phase</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;train&#39;</span><span class="p">,</span> <span class="s1">&#39;val&#39;</span><span class="p">]:</span>
+            <span class="k">if</span> <span class="n">phase</span> <span class="o">==</span> <span class="s1">&#39;train&#39;</span><span class="p">:</span>
+                <span class="n">model</span><span class="o">.</span><span class="n">train</span><span class="p">()</span>  <span class="c1"># Set model to training mode</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">model</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>   <span class="c1"># Set model to evaluate mode</span>
+
+            <span class="n">running_loss</span> <span class="o">=</span> <span class="mf">0.0</span>
+            <span class="n">running_corrects</span> <span class="o">=</span> <span class="mi">0</span>
+
+            <span class="c1"># Iterate over data.</span>
+            <span class="k">for</span> <span class="n">inputs</span><span class="p">,</span> <span class="n">labels</span> <span class="ow">in</span> <span class="n">dataloaders</span><span class="p">[</span><span class="n">phase</span><span class="p">]:</span>
+                <span class="n">inputs</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+                <span class="n">labels</span> <span class="o">=</span> <span class="n">labels</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+
+                <span class="c1"># zero the parameter gradients</span>
+                <span class="n">optimizer</span><span class="o">.</span><span class="n">zero_grad</span><span class="p">()</span>
+
+                <span class="c1"># forward</span>
+                <span class="c1"># track history if only in train</span>
+                <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">set_grad_enabled</span><span class="p">(</span><span class="n">phase</span> <span class="o">==</span> <span class="s1">&#39;train&#39;</span><span class="p">):</span>
+                    <span class="n">outputs</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span>
+                    <span class="n">_</span><span class="p">,</span> <span class="n">preds</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">outputs</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+                    <span class="n">loss</span> <span class="o">=</span> <span class="n">criterion</span><span class="p">(</span><span class="n">outputs</span><span class="p">,</span> <span class="n">labels</span><span class="p">)</span>
+
+                    <span class="c1"># backward + optimize only if in training phase</span>
+                    <span class="k">if</span> <span class="n">phase</span> <span class="o">==</span> <span class="s1">&#39;train&#39;</span><span class="p">:</span>
+                        <span class="n">loss</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
+                        <span class="n">optimizer</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
+
+                <span class="c1"># statistics</span>
+                <span class="n">running_loss</span> <span class="o">+=</span> <span class="n">loss</span><span class="o">.</span><span class="n">item</span><span class="p">()</span> <span class="o">*</span> <span class="n">inputs</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+                <span class="n">running_corrects</span> <span class="o">+=</span> <span class="n">torch</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">preds</span> <span class="o">==</span> <span class="n">labels</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">phase</span> <span class="o">==</span> <span class="s1">&#39;train&#39;</span><span class="p">:</span>
+                <span class="n">scheduler</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
+
+            <span class="n">epoch_loss</span> <span class="o">=</span> <span class="n">running_loss</span> <span class="o">/</span> <span class="n">dataset_sizes</span><span class="p">[</span><span class="n">phase</span><span class="p">]</span>
+            <span class="n">epoch_acc</span> <span class="o">=</span> <span class="n">running_corrects</span><span class="o">.</span><span class="n">double</span><span class="p">()</span> <span class="o">/</span> <span class="n">dataset_sizes</span><span class="p">[</span><span class="n">phase</span><span class="p">]</span>
+
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> Loss: </span><span class="si">{:.4f}</span><span class="s1"> Acc: </span><span class="si">{:.4f}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="n">phase</span><span class="p">,</span> <span class="n">epoch_loss</span><span class="p">,</span> <span class="n">epoch_acc</span><span class="p">))</span>
+
+            <span class="c1"># deep copy the model</span>
+            <span class="k">if</span> <span class="n">phase</span> <span class="o">==</span> <span class="s1">&#39;val&#39;</span> <span class="ow">and</span> <span class="n">epoch_acc</span> <span class="o">&gt;</span> <span class="n">best_acc</span><span class="p">:</span>
+                <span class="n">best_acc</span> <span class="o">=</span> <span class="n">epoch_acc</span>
+                <span class="n">best_model_wts</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">state_dict</span><span class="p">())</span>
+
+        <span class="nb">print</span><span class="p">()</span>
+
+    <span class="n">time_elapsed</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">since</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Training complete in </span><span class="si">{:.0f}</span><span class="s1">m </span><span class="si">{:.0f}</span><span class="s1">s&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+        <span class="n">time_elapsed</span> <span class="o">//</span> <span class="mi">60</span><span class="p">,</span> <span class="n">time_elapsed</span> <span class="o">%</span> <span class="mi">60</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Best val Acc: </span><span class="si">{:4f}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">best_acc</span><span class="p">))</span>
+
+    <span class="c1"># load best model weights</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">load_state_dict</span><span class="p">(</span><span class="n">best_model_wts</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">model</span>
+</pre></div>
+
+
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">visualize_model</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">num_images</span><span class="o">=</span><span class="mi">6</span><span class="p">):</span>
+    <span class="n">was_training</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">training</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
+    <span class="n">images_so_far</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
+
+    <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="n">labels</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">dataloaders</span><span class="p">[</span><span class="s1">&#39;val&#39;</span><span class="p">]):</span>
+            <span class="n">inputs</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+            <span class="n">labels</span> <span class="o">=</span> <span class="n">labels</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+
+            <span class="n">outputs</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span>
+            <span class="n">_</span><span class="p">,</span> <span class="n">preds</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">outputs</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">size</span><span class="p">()[</span><span class="mi">0</span><span class="p">]):</span>
+                <span class="n">images_so_far</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="n">num_images</span><span class="o">//</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">images_so_far</span><span class="p">)</span>
+                <span class="n">ax</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s1">&#39;off&#39;</span><span class="p">)</span>
+                <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;predicted: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">class_names</span><span class="p">[</span><span class="n">preds</span><span class="p">[</span><span class="n">j</span><span class="p">]]))</span>
+                <span class="n">imshow</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">j</span><span class="p">])</span>
+
+                <span class="k">if</span> <span class="n">images_so_far</span> <span class="o">==</span> <span class="n">num_images</span><span class="p">:</span>
+                    <span class="n">model</span><span class="o">.</span><span class="n">train</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="n">was_training</span><span class="p">)</span>
+                    <span class="k">return</span>
+        <span class="n">model</span><span class="o">.</span><span class="n">train</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="n">was_training</span><span class="p">)</span>
+</pre></div>
+
+
+<div class="highlight"><pre><span></span><span class="n">model_ft</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">resnet18</span><span class="p">(</span><span class="n">pretrained</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="c1"># model_ft = models.wide_resnet50_2(pretrained=True)</span>
+
+<span class="n">num_ftrs</span> <span class="o">=</span> <span class="n">model_ft</span><span class="o">.</span><span class="n">fc</span><span class="o">.</span><span class="n">in_features</span>
+<span class="c1"># Here the size of each output sample is set to 2.</span>
+<span class="c1"># Alternatively, it can be generalized to nn.Linear(num_ftrs, len(class_names)).</span>
+<span class="n">model_ft</span><span class="o">.</span><span class="n">fc</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">num_ftrs</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">class_names</span><span class="p">))</span>
+
+<span class="n">model_ft</span> <span class="o">=</span> <span class="n">model_ft</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+
+<span class="n">criterion</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">CrossEntropyLoss</span><span class="p">()</span>            
+
+<span class="c1"># Observe that all parameters are being optimized</span>
+<span class="n">optimizer_ft</span> <span class="o">=</span> <span class="n">optim</span><span class="o">.</span><span class="n">SGD</span><span class="p">(</span><span class="n">model_ft</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span> <span class="n">lr</span><span class="o">=</span><span class="mf">0.0001</span><span class="p">,</span> <span class="n">momentum</span><span class="o">=</span><span class="mf">0.9</span><span class="p">)</span>
+
+<span class="c1"># Decay LR by a factor of 0.1 every 7 epochs</span>
+<span class="n">exp_lr_scheduler</span> <span class="o">=</span> <span class="n">lr_scheduler</span><span class="o">.</span><span class="n">StepLR</span><span class="p">(</span><span class="n">optimizer_ft</span><span class="p">,</span> <span class="n">step_size</span><span class="o">=</span><span class="mi">7</span><span class="p">,</span> <span class="n">gamma</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
+</pre></div>
+
+
+<div class="highlight"><pre><span></span><span class="n">model_ft</span> <span class="o">=</span> <span class="n">train_model</span><span class="p">(</span><span class="n">model_ft</span><span class="p">,</span> <span class="n">criterion</span><span class="p">,</span> <span class="n">optimizer_ft</span><span class="p">,</span> <span class="n">exp_lr_scheduler</span><span class="p">,</span>
+                       <span class="n">num_epochs</span><span class="o">=</span><span class="mi">25</span><span class="p">)</span>
+<span class="n">visualize_model</span><span class="p">(</span><span class="n">model_ft</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+
+
+<div class="highlight"><pre><span></span>Epoch 0/24
+----------
+train Loss: 1.0306 Acc: 0.5837
+val Loss: 0.6033 Acc: 0.8225
+
+Epoch 1/24
+----------
+train Loss: 0.7453 Acc: 0.7332
+val Loss: 0.4137 Acc: 0.8866
+
+Epoch 2/24
+----------
+train Loss: 0.6719 Acc: 0.7579
+val Loss: 0.3087 Acc: 0.9080
+
+Epoch 3/24
+----------
+train Loss: 0.6347 Acc: 0.7750
+val Loss: 0.3126 Acc: 0.9015
+
+Epoch 4/24
+----------
+train Loss: 0.5632 Acc: 0.8032
+val Loss: 0.2443 Acc: 0.9173
+
+Epoch 5/24
+----------
+train Loss: 0.5734 Acc: 0.7888
+val Loss: 0.2449 Acc: 0.9201
+
+Epoch 6/24
+----------
+train Loss: 0.5844 Acc: 0.7970
+val Loss: 0.2195 Acc: 0.9275
+
+Epoch 7/24
+----------
+train Loss: 0.5831 Acc: 0.7977
+val Loss: 0.2579 Acc: 0.9117
+
+Epoch 8/24
+----------
+train Loss: 0.5224 Acc: 0.8162
+val Loss: 0.2004 Acc: 0.9368
+
+Epoch 9/24
+----------
+train Loss: 0.5242 Acc: 0.8189
+val Loss: 0.2012 Acc: 0.9312
+
+Epoch 10/24
+----------
+train Loss: 0.5110 Acc: 0.8128
+val Loss: 0.2096 Acc: 0.9275
+
+Epoch 11/24
+----------
+train Loss: 0.5423 Acc: 0.8045
+val Loss: 0.1901 Acc: 0.9359
+
+Epoch 12/24
+----------
+train Loss: 0.5272 Acc: 0.8032
+val Loss: 0.2184 Acc: 0.9210
+
+Epoch 13/24
+----------
+train Loss: 0.5563 Acc: 0.8018
+val Loss: 0.1885 Acc: 0.9349
+
+Epoch 14/24
+----------
+train Loss: 0.5467 Acc: 0.7984
+val Loss: 0.2054 Acc: 0.9294
+
+Epoch 15/24
+----------
+train Loss: 0.5352 Acc: 0.8086
+val Loss: 0.2325 Acc: 0.9164
+
+Epoch 16/24
+----------
+train Loss: 0.5445 Acc: 0.8128
+val Loss: 0.2038 Acc: 0.9303
+
+Epoch 17/24
+----------
+train Loss: 0.5523 Acc: 0.8045
+val Loss: 0.2023 Acc: 0.9303
+
+Epoch 18/24
+----------
+train Loss: 0.5183 Acc: 0.8114
+val Loss: 0.1925 Acc: 0.9349
+
+Epoch 19/24
+----------
+train Loss: 0.5540 Acc: 0.8025
+val Loss: 0.2109 Acc: 0.9312
+
+Epoch 20/24
+----------
+train Loss: 0.5112 Acc: 0.8134
+val Loss: 0.1838 Acc: 0.9405
+
+Epoch 21/24
+----------
+train Loss: 0.5090 Acc: 0.8189
+val Loss: 0.1932 Acc: 0.9340
+
+Epoch 22/24
+----------
+train Loss: 0.5287 Acc: 0.8121
+val Loss: 0.1964 Acc: 0.9331
+
+Epoch 23/24
+----------
+train Loss: 0.5192 Acc: 0.8230
+val Loss: 0.1981 Acc: 0.9294
+
+Epoch 24/24
+----------
+train Loss: 0.5499 Acc: 0.8066
+val Loss: 0.1879 Acc: 0.9359
+
+Training complete in 37m 53s
+Best val Acc: 0.940520
+</pre></div>
+
+
+<p><img align="center" width = "750" src="images/plantdisease/output_17_1.png" alt="Drawing"/></p>
+<p><img align="center" width = "750" src="images/plantdisease/output_17_2.png" alt="Drawing"/></p>
+<p><img align="center" width = "750" src="images/plantdisease/output_17_3.png" alt="Drawing"/></p>
+<p><img align="center" width = "750" src="images/plantdisease/output_17_4.png" alt="Drawing"/></p>
+<p><img align="center" width = "750" src="images/plantdisease/output_17_5.png" alt="Drawing"/></p>
+<p><img align="center" width = "750" src="images/plantdisease/output_17_6.png" alt="Drawing"/></p>
+<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="kn">import</span> <span class="n">f1_score</span><span class="p">,</span> <span class="n">accuracy_score</span>
+<span class="k">def</span> <span class="nf">test_label_predictions</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">test_loader</span><span class="p">):</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
+    <span class="n">actuals</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">predictions</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">outputs</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
+        <span class="k">for</span> <span class="n">data</span><span class="p">,</span> <span class="n">target</span> <span class="ow">in</span> <span class="n">test_loader</span><span class="p">:</span>
+            <span class="n">data</span><span class="p">,</span> <span class="n">target</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">),</span> <span class="n">target</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+            <span class="n">output</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+            <span class="n">outputs</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">functional</span><span class="o">.</span><span class="n">softmax</span><span class="p">(</span><span class="n">output</span><span class="p">)</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">())</span>
+            <span class="n">prediction</span> <span class="o">=</span> <span class="n">output</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">keepdim</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">actuals</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">target</span><span class="o">.</span><span class="n">view_as</span><span class="p">(</span><span class="n">prediction</span><span class="p">))</span>
+            <span class="n">predictions</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">prediction</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">i</span><span class="o">.</span><span class="n">item</span><span class="p">()</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">actuals</span><span class="p">],</span> <span class="p">[</span><span class="n">i</span><span class="o">.</span><span class="n">item</span><span class="p">()</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">predictions</span><span class="p">],</span> <span class="n">outputs</span>
+
+
+<span class="n">val_loader</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">DataLoader</span><span class="p">(</span><span class="n">image_datasets</span><span class="p">[</span><span class="s1">&#39;val&#39;</span><span class="p">],</span> <span class="n">batch_size</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>
+                                             <span class="n">shuffle</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">num_workers</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+
+
+
+<span class="n">actuals</span><span class="p">,</span> <span class="n">predictions</span><span class="p">,</span> <span class="n">output</span><span class="o">=</span> <span class="n">test_label_predictions</span><span class="p">(</span><span class="n">model_ft</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">val_loader</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Confusion matrix:&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">confusion_matrix</span><span class="p">(</span><span class="n">actuals</span><span class="p">,</span> <span class="n">predictions</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;F1 score: </span><span class="si">%f</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">f1_score</span><span class="p">(</span><span class="n">actuals</span><span class="p">,</span> <span class="n">predictions</span><span class="p">,</span> <span class="n">average</span><span class="o">=</span><span class="s1">&#39;micro&#39;</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Accuracy score: </span><span class="si">%f</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">accuracy_score</span><span class="p">(</span><span class="n">actuals</span><span class="p">,</span> <span class="n">predictions</span><span class="p">))</span>
+</pre></div>
+
+
+<p>Above we can see a confusion matrix on the validataion dataset (20% of the original training data). Proportionally the multiple-diseases category is the worst performing, which isn't a surprised as addressed earlier given the lower quantity of data. However the model is still able to achieve an accuracy score over 97% in total. </p>
+<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="kn">import</span> <span class="n">roc_auc_score</span>
+
+
+<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">(</span><span class="n">output</span><span class="p">))</span>
+<span class="n">aucs</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">df</span><span class="p">:</span>
+    <span class="n">auc</span> <span class="o">=</span> <span class="n">roc_auc_score</span><span class="p">(</span><span class="n">val</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:,</span><span class="mi">1</span><span class="p">],</span> <span class="n">df</span><span class="p">[</span><span class="n">col</span><span class="p">])</span>
+    <span class="n">aucs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">auc</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">val</span><span class="o">.</span><span class="n">columns</span><span class="p">[</span><span class="n">col</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;: &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">auc</span><span class="p">,</span> <span class="mi">2</span><span class="p">)))</span>
+<span class="n">roc_auc_score</span><span class="p">(</span><span class="n">val</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:,</span><span class="mi">1</span><span class="p">:</span><span class="mi">5</span><span class="p">],</span> <span class="n">df</span><span class="p">,</span> <span class="n">multi_class</span> <span class="o">=</span> <span class="s1">&#39;ovo&#39;</span><span class="p">)</span>
+</pre></div>
+
+
+<div class="highlight"><pre><span></span><span class="n">data_dir</span> <span class="o">=</span> <span class="n">filepath</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\\</span><span class="s1">images_category&#39;</span>
+<span class="n">test_image_dataset</span> <span class="o">=</span> <span class="n">datasets</span><span class="o">.</span><span class="n">ImageFolder</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data_dir</span><span class="p">,</span> <span class="s1">&#39;test_images&#39;</span><span class="p">),</span> <span class="n">data_transforms</span><span class="p">[</span><span class="s1">&#39;val&#39;</span><span class="p">])</span>
+
+<span class="n">test_dataloader</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">DataLoader</span><span class="p">(</span><span class="n">test_image_dataset</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>
+                                             <span class="n">shuffle</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">num_workers</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+
+
+<span class="n">actuals</span><span class="p">,</span> <span class="n">predictions</span><span class="p">,</span> <span class="n">output</span><span class="o">=</span> <span class="n">test_label_predictions</span><span class="p">(</span><span class="n">model_ft</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">test_dataloader</span><span class="p">)</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">(</span><span class="n">output</span><span class="p">))</span>
+<span class="n">df</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;healthy&#39;</span><span class="p">,</span> <span class="s1">&#39;multiple_diseases&#39;</span><span class="p">,</span> <span class="s1">&#39;rust&#39;</span><span class="p">,</span> <span class="s1">&#39;scab&#39;</span><span class="p">]</span>
+</pre></div>
+
+
+<div class="highlight"><pre><span></span><span class="n">targets</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="ow">in</span> <span class="n">test_image_dataset</span><span class="o">.</span><span class="n">imgs</span><span class="p">:</span>
+    <span class="n">targets</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\\</span><span class="s1">&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">][:</span><span class="o">-</span><span class="mi">4</span><span class="p">])</span>
+<span class="n">targets</span><span class="p">[:</span><span class="mi">5</span><span class="p">]</span>
+</pre></div>
+
+
+<div class="highlight"><pre><span></span><span class="n">pred</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">targets</span><span class="p">,</span> <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;image_id&#39;</span><span class="p">),</span> <span class="n">df</span><span class="p">],</span> <span class="n">axis</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">pred</span><span class="p">[</span><span class="s1">&#39;sort&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pred</span><span class="p">[</span><span class="s1">&#39;image_id&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">str</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+<span class="n">pred</span> <span class="o">=</span> <span class="n">pred</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="s1">&#39;sort&#39;</span><span class="p">)</span>
+<span class="c1"># df.columns = [&#39;healthy&#39;, &#39;multiple_diseases&#39;, &#39;rust&#39;, &#39;scab&#39;]</span>
+<span class="c1"># pred = test[&#39;image_id&#39;] + df</span>
+<span class="n">pred</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+<span class="n">pred</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">filepath</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\\</span><span class="s1">predictions.csv&#39;</span><span class="p">)</span>
+</pre></div>
+
+
+<p>The model recieved a AUC ROC of over 94% - not the greatest but also not the worst. </p>
+<p>Next steps could include: 
+- Evaluation of different models to determine if other architectures are better suited to the image problem. 
+- Evaluation of freezing different layers during trianing
+- Ideally utlizing model weights and architecture learned on a larger plant specific dataset. The models we used were trained largely on MS COCO or ImageNet which isn't specific to plants and therefore likely under-performs. Given the low quantity of image data in the current dataset - training on a larger plant specific dataset, may allow the model to learn different features specific to a plant, and then use this as a more suitable starting point to learn disease categorization. 
+- Image augmentation: Either to the multiple disease category specifically in order to increase the number of training images - or to the entire dataset, to allow more effective trianing. Likely a combination of both would be most suitable. </p></p>
+        </div>
+    </div>
+
+<div class="fh5co-narrow-content">
+<div class="animate-box" data-animate-effect="fadeInLeft">
+    <h2><!-- <i class="icon-speech-bubble"></i>  -->Comments</h2>
+</div>
+<div class="animate-box" data-animate-effect="fadeInLeft">
+    <div id="disqus_thread"></div>
+</div>
+
+<script>
+var disqus_config = function () { 
+  this.language = "english";
+};
+(function() { // DON'T EDIT BELOW THIS LINE
+var d = document, s = d.createElement('script');
+s.src = 'https://.disqus.com/embed.js';
+s.setAttribute('data-timestamp', +new Date());
+(d.head || d.body).appendChild(s);
+})();
+</script>
+<noscript><a href="https://disqus.com/?ref_noscript">Please enable JavaScript to view the comments powered by Disqus.</a></noscript>
+<div class="fh5co-footer">
+    <p><small>&copy; 2016 Blend Free HTML5. All Rights Reserved.</span> <span>Designed by <a href="http://freehtml5.co/" target="_blank">FreeHTML5.co</a></span>
+    <br /><span>Pelican Theme by: <a href="https://github.com/claudio-walser/pelican-fh5co-marble" target="_blank">Claudio Walser</a></span></small></p>
+
+</div>                
+        </div>
+    </div>
+
+    <!-- jQuery -->
+    <script src="https://aaron-j-olson.com/theme/js/jquery.min.js"></script>
+    <!-- jQuery Easing -->
+    <script src="https://aaron-j-olson.com/theme/js/jquery.easing.1.3.js"></script>
+    <!-- Bootstrap -->
+    <script src="https://aaron-j-olson.com/theme/js/bootstrap.min.js"></script>
+    <!-- Waypoints -->
+    <script src="https://aaron-j-olson.com/theme/js/jquery.waypoints.min.js"></script>
+    <!-- Flexslider -->
+    <script src="https://aaron-j-olson.com/theme/js/jquery.flexslider-min.js"></script>
+
+
+    <!-- MAIN JS -->
+    <script src="https://aaron-j-olson.com/theme/js/main.js"></script>
+    </body>
+</html>

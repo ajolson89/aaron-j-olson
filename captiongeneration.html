@@ -136,26 +136,18 @@
 <p>One element common across all efforts towards natural language generation is the measure of accuracy or success. Unlike natural language processing, the accuracy of a given model can be difficult to determine because the accuracy/relevance of a caption can be up to human interpretation. In a number of papers manual grading of the captions has been utilized. For automated metrics BLEU is likely the most popular and was arguably the first to deliver score on par with human judgment[8,3,7]. BLEU is a modified form of precision where a specific word can only occur a maximum of two times in the evaluated generated text. BLEU and many other automatic metrics can be prone to a n-gram overlap sensitivity, where two sentences that mean the same thing but don’t share words would be evaluated poorly[7]. The SPICE score attempts to better approximate caption accuracy by analyzing the semantic propositional content of a caption using a scene graph  but has been recognized as highly dependent on the parsing accuracy[7,10]. </p>
 <p><strong>Approach</strong></p>
 <p>The state of the art in image captioning currently is built upon a CNN + LSTM architecture, we will conform to this structure. From the ‘Show and Tell’ paper the following LSTM layout was depicted: </p>
-<p id="gdcalert1" ><span style="color: red; font-weight: bold">>>>>>  gd2md-html alert: inline image link here (to images/imagecaptionimage1.png). Store image on your image server and adjust path/filename/extension if necessary. </span><br>(<a href="#">Back to top</a>)(<a href="#gdcalert2">Next alert</a>)<br><span style="color: red; font-weight: bold">>>>>> </span></p>
-
-<p><img alt="alt_text" src="images/imagecaptionimage1.png" title="image_tooltip"></p>
+<p><img src="images/captiongen/imagecaptionimage1.png" alt="Drawing" style="width: 750px;"/></p>
 <p>Our architecture modifies this slightly, by introducing the image features into each LSTM cell and having them persist(not only the first). This “multimodal” architecture modification has been discussed in literature and has shown to assist in caption generation in some cases [3][11][6]. </p>
-<p id="gdcalert2" ><span style="color: red; font-weight: bold">>>>>>  gd2md-html alert: inline image link here (to images/imagecaptionimage2.png). Store image on your image server and adjust path/filename/extension if necessary. </span><br>(<a href="#">Back to top</a>)(<a href="#gdcalert3">Next alert</a>)<br><span style="color: red; font-weight: bold">>>>>> </span></p>
-
-<p><img alt="alt_text" src="images/imagecaptionimage2.png" title="image_tooltip"></p>
+<p><img src="images/captiongen/imagecaptionimage2.png" alt="Drawing" style="width: 750px;"/></p>
 <p><em>Baseline</em></p>
 <p>The CNN or image encoder uses the pre-trained VGG16 model. By using a pre-trained model we were able to focus efforts on the language model. We were also willing to set concerns of this choice aside due to experimental reports of success suggested in using pre-trained CNN models [3,4]. Rather than utilizing the output of the VGG model (which is a softmax layer in order to determine the probabilities of image features), our model removes the softmax layer and encodes the image in an array of size 4096. This array is fed to a dense network that embeds it to a 128 dimension image embedding and the embedding is fed via a layer merge with the language model when training the overall image captioning model. The choice to merge and persist features comes both from the success reported [11,19] but also for sake of convenience in implementation as well as reduced training parameters. We chose to embed the images into a smaller dimension space as we persist the image features into the sequence and although LSTM’s are known to capture long term dependencies better than their vanilla RNN counterparts, we stuck to the safe side of shorter sequences due to smaller data.</p>
 <p>The word embedding phase uses a 256 dimension word embedding learned on the image captions used in training. We chose to learn the embedding rather than use a pre-trained word embedding (ie word-to-vec) due to the data being domain specific as well as concerns of properties pre-trained embeddings where crucial details for food such as color are lumped together due to their proximity in vector space as see in class and literature [4,16]. By learning our own word embeddings, we also stipulate the requirement of a large training dataset (otherwise our word embedding won’t be optimized), however words that may be utilized in a image caption may not show up in a pre-trained word embedding which could cause an unknown word embedding. </p>
 <p>Seeing as our dataset isn’t as large, and the food domain had smaller vocabulary size, we chose to deviate from the traditional 512 LSTM encoder suggested by Bengio [4] and opted for 256 as suggested by the research group who adapted their image captioning to a new domain [6]. We then pass the output of the LSTM to a dense layer to further condense the dimension to 128. </p>
 <p>These two layers are combined via concatenation and fed into an LSTM cell and finally to a softmax layer. This model attempts to predict the next word in a sequence of words. Captions have been pre-processed to include &lt;start&gt; and &lt;end&gt; tags, with a padded caption length dependent on the longest caption observed in training. As previously mentioned, at each prediction step, both the current image caption prediction as well as the image vector is passed to predict the next word: </p>
-<p id="gdcalert3" ><span style="color: red; font-weight: bold">>>>>>  gd2md-html alert: equation: use MathJax/LaTeX if your publishing platform supports it. </span><br>(<a href="#">Back to top</a>)(<a href="#gdcalert4">Next alert</a>)<br><span style="color: red; font-weight: bold">>>>>> </span></p>
-
-<p>Where </p>
-<p id="gdcalert4" ><span style="color: red; font-weight: bold">>>>>>  gd2md-html alert: equation: use MathJax/LaTeX if your publishing platform supports it. </span><br>(<a href="#">Back to top</a>)(<a href="#gdcalert5">Next alert</a>)<br><span style="color: red; font-weight: bold">>>>>> </span></p>
-
+<p><img src="images/captiongen/image1.png" alt="Drawing" style="width: 750px;"/></p>
+<p>Where $w_(1:L)$</p>
 <p>is the generated sentence and I is the image. The loss is computed using the ‘computed crossentropy’ which is defined as: </p>
-<p id="gdcalert5" ><span style="color: red; font-weight: bold">>>>>>  gd2md-html alert: equation: use MathJax/LaTeX if your publishing platform supports it. </span><br>(<a href="#">Back to top</a>)(<a href="#gdcalert6">Next alert</a>)<br><span style="color: red; font-weight: bold">>>>>> </span></p>
-
+<p><img src="images/captiongen/image3.png" alt="Drawing" style="width: 750px;"/></p>
 <p>Where p is the true representation and q is the predicted representation of the caption. When testing our dataset we compute accuracy based on the BLEU score which is a popular metric for language generation models and has previously been introduced. For optimization we use RMSProp [6,<em>16</em>] and upon various toy training sets ranging from 5-50,000 captions, found it performed better for this particular problem than the typical SGD [3,4] used. For generating quality captions, we settled on Bengio et. all’s suggested beam search of 3 as it qualitatively seemed to produce agreeable captions with minimal search [4] for these sets as well as offered reduced computational effort compared to larger sizes. </p>
 <p><em>Bi-Directional LSTM</em></p>
 <p>Adding to model complexity for sake of quality we have trained an additional model using a bi-directional LSTM cell rather than the unidirectional as implemented in <em>Show and Tell [4]</em>. The motivation for implementing this wider model comes from theoretical motivations of better understanding context due to consideration of both the “historical context” and “future context” of the target word [14] as well as practical motivations of being competitive to attention, object detection, and other advances in the image captioning domain [15]. The dimensions of the LSTMs, word embedding, and image embedding are kept the same to maintain some grounds for performance comparison. The drawback of this model comes with training time due to an additional backwards LSTM at each of the previous LSTM locations.</p>
@@ -173,9 +165,7 @@
 </ul>
 <p>After preprocessing the text we had an overall vocabulary size of 8,257 words. Our motivation of simplifying the set from such pre-processing comes from a combination of what we have seen for developing neural models in this class as well as the the simplification Bengio et. all and Karpathy et. all make in their respective image captioning models to allow for the embeddings to not be riddled with noise [4,16]. Lemmatization could be used to further reduce the vocabulary size. We elected not to follow lemmatization in an effort to produce human readable captions, rather than lemmatized vocabulary. </p>
 <p>Analyzing text by each data source we can see the following:</p>
-<p id="gdcalert6" ><span style="color: red; font-weight: bold">>>>>>  gd2md-html alert: inline image link here (to images/imagecaptionimage3.png). Store image on your image server and adjust path/filename/extension if necessary. </span><br>(<a href="#">Back to top</a>)(<a href="#gdcalert7">Next alert</a>)<br><span style="color: red; font-weight: bold">>>>>> </span></p>
-
-<p><img alt="alt_text" src="images/imagecaptionimage3.png" title="image_tooltip"></p>
+<p><img src="images/captiongen/imagecaptionimage3.png" alt="Drawing" style="width: 750px;"/></p>
 <p>Above is listed vocabulary facts prior to applying language preprocessing steps. Senticap and mscoco (previously compiled datasets) have similar average length and vocabulary size. Reddit stands out with a very large departure in vocabulary size and distribution of caption lengths. By applying the pre-processing steps, the Reddit vocabulary has decreased to 5,645 words with a maximum caption length of 25. Examining the Reddit captions, there are many that don’t appear to be clean image captions but rather comments, which could make caption prediction difficult.  </p>
 <p>For POS tagging, all datasets show an overwhelming usage of nouns followed by adjectives (see appendix for plot of POS distributions). For image captions, especially pertaining to food this makes intuitive sense. For the senticap dataset we have a higher proportion of adjectives than all other datasets and that yummly has a relative smaller distribution of unique parts of speech. The yummly dataset is comprised of factual food names such as “mushroom and garlic risotto”, hence this distribution makes sense. </p>
 <p>For sentiment analysis, it was observed that the senticap dataset has the highest presence of positive and negative sentiment, which is expected. Overwhelmingly, the captions are neutral, reflecting the fact that many contain objective captions. Reddit also contains a number of sentiment captions. </p>
@@ -262,9 +252,6 @@ BLEU-2: 0.23878
   <tr>
    <td>
 
-<p id="gdcalert7" ><span style="color: red; font-weight: bold">>>>>>  gd2md-html alert: inline image link here (to images/imagecaptionimage4.jpg). Store image on your image server and adjust path/filename/extension if necessary. </span><br>(<a href="#">Back to top</a>)(<a href="#gdcalert8">Next alert</a>)<br><span style="color: red; font-weight: bold">>>>>> </span></p>
-
-
 <img src="images/imagecaptionimage4.jpg" width="" alt="alt_text" title="image_tooltip">
 
    </td>
@@ -279,8 +266,6 @@ BLEU-2: 0.23878
   </tr>
   <tr>
    <td>
-
-<p id="gdcalert8" ><span style="color: red; font-weight: bold">>>>>>  gd2md-html alert: inline image link here (to images/imagecaptionimage5.jpg). Store image on your image server and adjust path/filename/extension if necessary. </span><br>(<a href="#">Back to top</a>)(<a href="#gdcalert9">Next alert</a>)<br><span style="color: red; font-weight: bold">>>>>> </span></p>
 
 
 <img src="images/imagecaptionimage5.jpg" width="" alt="alt_text" title="image_tooltip">
@@ -298,7 +283,6 @@ BLEU-2: 0.23878
   <tr>
    <td>
 
-<p id="gdcalert9" ><span style="color: red; font-weight: bold">>>>>>  gd2md-html alert: inline image link here (to images/imagecaptionimage6.jpg). Store image on your image server and adjust path/filename/extension if necessary. </span><br>(<a href="#">Back to top</a>)(<a href="#gdcalert10">Next alert</a>)<br><span style="color: red; font-weight: bold">>>>>> </span></p>
 
 
 <img src="images/imagecaptionimage6.jpg" width="" alt="alt_text" title="image_tooltip">
@@ -315,8 +299,6 @@ BLEU-2: 0.23878
   </tr>
   <tr>
    <td>
-
-<p id="gdcalert10" ><span style="color: red; font-weight: bold">>>>>>  gd2md-html alert: inline image link here (to images/imagecaptionimage7.png). Store image on your image server and adjust path/filename/extension if necessary. </span><br>(<a href="#">Back to top</a>)(<a href="#gdcalert11">Next alert</a>)<br><span style="color: red; font-weight: bold">>>>>> </span></p>
 
 
 <img src="images/imagecaptionimage7.png" width="" alt="alt_text" title="image_tooltip">
@@ -372,9 +354,6 @@ BLEU-2: 0.23878
   </tr>
   <tr>
    <td>
-
-<p id="gdcalert11" ><span style="color: red; font-weight: bold">>>>>>  gd2md-html alert: inline image link here (to images/imagecaptionimage8.png). Store image on your image server and adjust path/filename/extension if necessary. </span><br>(<a href="#">Back to top</a>)(<a href="#gdcalert12">Next alert</a>)<br><span style="color: red; font-weight: bold">>>>>> </span></p>
-
 
 <img src="images/imagecaptionimage8.png" width="" alt="alt_text" title="image_tooltip">
 
@@ -519,9 +498,6 @@ Empirical Evaluation of Gated Recurrent Neural Networks on Sequence Modeling.   
    </td>
    <td>
 
-<p id="gdcalert12" ><span style="color: red; font-weight: bold">>>>>>  gd2md-html alert: inline image link here (to images/imagecaptionimage9.png). Store image on your image server and adjust path/filename/extension if necessary. </span><br>(<a href="#">Back to top</a>)(<a href="#gdcalert13">Next alert</a>)<br><span style="color: red; font-weight: bold">>>>>> </span></p>
-
-
 <img src="images/imagecaptionimage9.png" width="" alt="alt_text" title="image_tooltip">
 
    </td>
@@ -534,8 +510,6 @@ Empirical Evaluation of Gated Recurrent Neural Networks on Sequence Modeling.   
    <td>Food images scraped from yummly (objective)
    </td>
    <td>
-
-<p id="gdcalert13" ><span style="color: red; font-weight: bold">>>>>>  gd2md-html alert: inline image link here (to images/imagecaptionimage10.jpg). Store image on your image server and adjust path/filename/extension if necessary. </span><br>(<a href="#">Back to top</a>)(<a href="#gdcalert14">Next alert</a>)<br><span style="color: red; font-weight: bold">>>>>> </span></p>
 
 
 <img src="images/imagecaptionimage10.jpg" width="" alt="alt_text" title="image_tooltip">
@@ -551,8 +525,6 @@ Empirical Evaluation of Gated Recurrent Neural Networks on Sequence Modeling.   
    </td>
    <td>
 
-<p id="gdcalert14" ><span style="color: red; font-weight: bold">>>>>>  gd2md-html alert: inline image link here (to images/imagecaptionimage11.jpg). Store image on your image server and adjust path/filename/extension if necessary. </span><br>(<a href="#">Back to top</a>)(<a href="#gdcalert15">Next alert</a>)<br><span style="color: red; font-weight: bold">>>>>> </span></p>
-
 
 <img src="images/imagecaptionimage11.jpg" width="" alt="alt_text" title="image_tooltip">
 
@@ -567,9 +539,6 @@ Empirical Evaluation of Gated Recurrent Neural Networks on Sequence Modeling.   
    </td>
    <td>
 
-<p id="gdcalert15" ><span style="color: red; font-weight: bold">>>>>>  gd2md-html alert: inline image link here (to images/imagecaptionimage12.jpg). Store image on your image server and adjust path/filename/extension if necessary. </span><br>(<a href="#">Back to top</a>)(<a href="#gdcalert16">Next alert</a>)<br><span style="color: red; font-weight: bold">>>>>> </span></p>
-
-
 <img src="images/imagecaptionimage12.jpg" width="" alt="alt_text" title="image_tooltip">
 
    </td>
@@ -579,20 +548,12 @@ Empirical Evaluation of Gated Recurrent Neural Networks on Sequence Modeling.   
 </table>
 
 <p>POS tagging for the different training datasets. There is similar distribution between all four datasets with respect to nouns and adjectives.  </p>
-<p id="gdcalert16" ><span style="color: red; font-weight: bold">>>>>>  gd2md-html alert: inline image link here (to images/imagecaptionimage13.png). Store image on your image server and adjust path/filename/extension if necessary. </span><br>(<a href="#">Back to top</a>)(<a href="#gdcalert17">Next alert</a>)<br><span style="color: red; font-weight: bold">>>>>> </span></p>
-
-<p><img alt="alt_text" src="images/imagecaptionimage13.png" title="image_tooltip"></p>
+<p><img src="images/captiongen/imagecaptionimage13.png" alt="Drawing" style="width: 750px;"/></p>
 <p>POS tagging for COCO dataset. The reference dataset has more unique tags (diverse language model) than the produced captions. This is confirmed by the size of the vocabulary, and critical analysis of the produced captions. As mentioned in the text, POS wasn’t as accurate for generated captions, likely due to odd transmissions between words. </p>
-<p id="gdcalert17" ><span style="color: red; font-weight: bold">>>>>>  gd2md-html alert: inline image link here (to images/imagecaptionimage14.png). Store image on your image server and adjust path/filename/extension if necessary. </span><br>(<a href="#">Back to top</a>)(<a href="#gdcalert18">Next alert</a>)<br><span style="color: red; font-weight: bold">>>>>> </span></p>
-
-<p><img alt="alt_text" src="images/imagecaptionimage14.png" title="image_tooltip"></p>
+<p><img src="images/captiongen/imagecaptionimage14.png" alt="Drawing" style="width: 750px;"/></p>
 <p>Caption length for the COCO dataset predictions. Similar distribution for the max limit, however the average caption length fluctuates for the different models. Baseline model actually increased the caption length in comparison to the reference captions. </p>
-<p id="gdcalert18" ><span style="color: red; font-weight: bold">>>>>>  gd2md-html alert: inline image link here (to images/imagecaptionimage15.png). Store image on your image server and adjust path/filename/extension if necessary. </span><br>(<a href="#">Back to top</a>)(<a href="#gdcalert19">Next alert</a>)<br><span style="color: red; font-weight: bold">>>>>> </span></p>
-
-<p><img alt="alt_text" src="images/imagecaptionimage15.png" title="image_tooltip"></p>
-<p id="gdcalert19" ><span style="color: red; font-weight: bold">>>>>>  gd2md-html alert: inline image link here (to images/imagecaptionimage16.png). Store image on your image server and adjust path/filename/extension if necessary. </span><br>(<a href="#">Back to top</a>)(<a href="#gdcalert20">Next alert</a>)<br><span style="color: red; font-weight: bold">>>>>> </span></p>
-
-<p><img alt="alt_text" src="images/imagecaptionimage16.png" title="image_tooltip"></p>
+<p><img src="images/captiongen/imagecaptionimage15.png" alt="Drawing" style="width: 750px;"/></p>
+<p><img src="images/captiongen/imagecaptionimage16.png" alt="Drawing" style="width: 750px;"/></p>
 <p>Top five predicted nouns and adjectives by model and test set. NLTK was used to provide POS tagging. As can be observed, in many cases the POS tags are incorrect. In many cases, our generated captions do not have english fluency, POS tagging relies on transmission probabilities to accurately predict a sequence of tags. Likely due to the lack of fluency in many captions, the POS tagging algorithm had a hard time correctly mapping POS.</p>
 <table>
   <tr>
